@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.youngtvjobs.ycc.rental.lockerMapper">
+	<!-- 나의 예약 현황 개수 -->
+	<select id="selectMyReservationCnt" parameterType="String" resultType="int">
+		SELECT count(*)
+		FROM tb_locker
+		JOIN locker_location
+		ON tb_locker.locker_location_id = locker_location.locker_location_id
+		WHERE user_id = #{user_id}
+		AND current_date <![CDATA[<=]]> locker_end_date
+	</select>
+	
+	<!-- 나의 예약 현황 SELECT -->
+	<select id="selectMyReservationStat" parameterType="String" resultType="LockerDto">
+		SELECT locker_id, locker_no, tb_locker.locker_location_id, user_id
+					 , locker_cost, locker_start_date, locker_end_date, locker_location.location_name
+		FROM tb_locker
+		JOIN locker_location
+		ON tb_locker.locker_location_id = locker_location.locker_location_id
+		WHERE user_id = #{user_id }
+		ORDER BY locker_end_date DESC
+	</select>
+
+	<!-- 예약한 사물함 비활성화를 위해 예약된 사물함 SELECT -->
+	<select id="selectReservation" parameterType="LockerDto" resultType="LockerDto">
+		SELECT locker_no, user_id, locker_start_date, locker_end_date
+		FROM tb_locker
+		WHERE
+		<choose>
+			<when test="locker_location_id != 0">
+				locker_location_id = #{locker_location_id}
+			</when>
+			<otherwise>
+				locker_location_id = 1
+			</otherwise>
+		</choose>
+		AND user_id IS NOT NULL
+		<choose>
+			<when test="locker_start_date != null and !locker_start_date.equals('') ">
+				AND #{locker_end_date}::date <![CDATA[>=]]> locker_start_date
+				AND #{locker_start_date}::date <![CDATA[<]]> locker_end_date
+			</when>
+			<otherwise>
+				AND current_date + 7 <![CDATA[>=]]> locker_start_date
+				AND current_date <![CDATA[<]]> locker_end_date 
+			</otherwise>
+		</choose>
+		ORDER BY locker_id
+	</select>
+	
+	<!-- 장소별 사물함 번호 SELECT -->
+	<select id="selectLocker" parameterType="LockerDto" resultType="LockerDto">
+		SELECT *
+		FROM tb_locker
+		WHERE
+		<choose>
+			<when test="locker_location_id != 0">
+				locker_location_id = #{locker_location_id}
+			</when>
+			<otherwise>
+				locker_location_id = 1
+			</otherwise>
+		</choose>
+		ORDER BY locker_id
+	</select>
+	
+	<!-- 사물함위치 SELECT -->
+	<select id="selectLockerLocation" resultType="Map">
+		SELECT locker_location_id, location_name
+		FROM locker_location
+	</select>
+	
+	<!-- 사물함 예약 -->
+	<insert id="insertLockerReservation" parameterType="LockerDto">
+		INSERT INTO tb_locker(locker_no, locker_location_id, user_id, locker_cost, locker_start_date, locker_end_date)
+		VALUES(#{locker_no}, #{locker_location_id}, #{user_id}, #{locker_cost}, #{locker_start_date}::date, #{locker_end_date}::date)
+	</insert>
+</mapper>

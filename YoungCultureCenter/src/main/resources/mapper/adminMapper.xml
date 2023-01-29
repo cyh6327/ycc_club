@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+	 작성자 : alwaysFinn(김지호)
+	 최초 작성일 : '22. 12. 02
+	 마지막 업데이트 : '23.01.05
+	 업데이트 내용 : code clean up
+ 	 기능 : 회원가입 시 보여지는 약관을 관리자가 수정 및 업데이트 할 수 있는 기능으로 DB와 연결됨  
+-->
+ 
+<mapper namespace="com.youngtvjobs.ycc.admin.adminMapper" >
+  
+  <!-- DB에 있는 모든 약관을 가져오는 select 문 -->
+  <!-- '23.01.05 이용약관, 개인정보취급방침 두개 있음 -->
+  <select id="selectAll" resultType="AdminDto">
+  		select * from tb_terms
+  </select>
+  
+  <!-- 약관 수정하는 update문 -->
+  <update id="modifyterms" parameterType="AdminDto">
+  	UPDATE tb_terms
+	SET join_terms = #{join_terms }, join_privacy_terms = #{join_privacy_terms }
+  </update>
+  
+</mapper>

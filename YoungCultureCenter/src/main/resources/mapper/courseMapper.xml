@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.youngtvjobs.ycc.course.courseMapper">
+	
+	<!-- 강좌 select sql문(FROM tb_course JOIN tb_user JOIN course_type) -->
+	<sql id="selectFromCourse">
+		SELECT tb_course.course_id, course_nm, course_reg_start_date, course_reg_end_date, course_start_date
+					, course_end_date, course_day, course_time, course_target, course_cost, course_info
+					, tb_course.user_id, tb_course.croom_id, user_name, tb_course.course_cate_cd
+					, current_date - course_reg_end_date::Date, course_rating, course_applicants, croom_mpop
+		FROM tb_course
+		JOIN tb_user
+		ON tb_course.user_id = tb_user.user_id 
+		JOIN course_type
+		ON tb_course.course_cate_cd = course_type.course_cate_cd 
+		JOIN classroom
+		ON classroom.croom_id = tb_course.croom_id 
+	</sql>
+	
+	<!-- 강좌분류('운동(Spo)', '문화(Cul)', '교육(Edu)') -->
+	<sql id="searchCate">
+		<choose>
+			<when test='cate == "Spo"'>
+				AND tb_course.course_cate_cd = 'Spo'
+				AND course_nm LIKE concat('%', #{keyword}, '%') 
+			</when>
+			<when test='cate == "Cul"'>
+				AND tb_course.course_cate_cd = 'Cul'
+				AND course_nm LIKE concat('%', #{keyword}, '%') 
+			</when>
+			<when test='cate == "Edu"'>
+				AND tb_course.course_cate_cd = 'Edu'
+				AND course_nm LIKE concat('%', #{keyword}, '%') 
+			</when>
+			<otherwise>
+				AND course_nm LIKE concat('%', #{keyword}, '%')
+			</otherwise>
+		</choose>
+	</sql>
+	
+	<!-- 수강대상('성인(Adu)', '청소년(Stu)', '유아(Chd)', '노인(Old)', 'All') -->
+	<sql id="searchTarget">
+		<choose>
+			<when test='target == "Adu"'>
+				AND tb_course.course_target = '성인' 
+			</when>
+			<when test='target == "Stu"'>
+				AND tb_course.course_target = '청소년' 
+			</when>
+			<when test='target == "Chd"'>
+				AND tb_course.course_target = '유아' 
+			</when>
+			<when test='target == "Old"'>
+				AND tb_course.course_target = '노인' 
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</sql>
+	
+	<!-- 접수상태('접수가능', '오픈예정', '오픈예정+접수가능') -->
+	<sql id="searchCourseStat">
+		<choose>
+			<!-- P: '접수가능' 
+					 오늘날짜 - 접수시작일 >= 0 ==> '접수가능', '접수마감'
+					 오늘날짜 - 접수마감일 <= 0 ==> '오픈예정', '접수가능' -->
+			<when test='stat == "P"'> 
+			AND current_date - course_reg_start_date::Date <![CDATA[>=]]> 0 
+			AND current_date - course_reg_end_date::Date <![CDATA[<=]]> 0
+			</when>
+			<!-- O: '오픈예정' 오늘날짜 - 접수시작일 < 0 ==> '오픈예정' -->
+			<when test='stat == "O"'>
+			AND current_date - course_reg_start_date::Date <![CDATA[<]]> 0
+			</when>
+			<!-- 기본값 = All: 오늘날짜 - 접수마감일 <= 0 ==> '오픈예정', '접수가능'  -->
+			<otherwise>
+			AND current_date - course_reg_end_date::Date <![CDATA[<=]]> 0
+			</otherwise>
+		</choose>
+	</sql>
+	
+	<!-- 정렬버튼('강의명순', '접수마감일순', '수강시작일순') -->
+	<sql id="orderby">
+		<choose>
+			<!-- 접수마감일순 -->
+			<when test='orderby=="End"'>
+				ORDER BY course_reg_start_date
+			</when>
+			<!-- 수강시작일순 -->
+			<when test='orderby=="Start"'>
+				ORDER BY course_start_date
+			</when>
+			<!-- 강의평점순 -->
+			<!-- <when test='orderby=="Star"'>
+				ORDER BY AVG(review_rating) desc
+			</when> -->
+			<!-- 기본값 = 강좌명순 -->
+			<otherwise>
+				ORDER BY course_nm
+			</otherwise>
+		</choose>
+	</sql>
+	
+	<select id="selectCourseImage" parameterType="int" resultType="CourseImageDto">
+		SELECT * 
+		FROM course_image 
+		WHERE course_id = #{course_id}
+	</select>
+	
+	<!-- 강좌 타입 불러오기 -->
+	<select id="selectCourseType" resultType="CourseDto">
+		SELECT course_cate_cd, course_cate_name
+		FROM course_type
+		ORDER BY course_cate_cd
+	</select>
+	
+	<!-- 강의실 불러오기 -->
+	<select id="selectCroomId" resultType="CourseDto">
+		SELECT croom_id, croom_name 
+		FROM classroom 
+		ORDER BY croom_id 
+	</select>
+	
+	<!-- 수강신청 테이블 -->
+	<select id="selectAttendTable" parameterType="map" resultType="AttendDto">
+		SELECT attend_code, course_id, b.user_id, attend_datetime, b.user_name 
+		FROM attend a
+		JOIN tb_user b 
+		ON a.user_id = b.user_id
+		WHERE course_id = #{course_id} 
+		AND a.user_id = #{user_id}
+	</select>
+	
+	<!-- 수강신청 중복 체크 -->
+	<select id="attendDuplicateCheck" parameterType="map" resultType="int">
+		SELECT count(*)
+		FROM attend
+		WHERE course_id = #{course_id} 
+		AND user_id = #{user_id}
+	</select>
+	
+	<!-- 평점 계산 -->
+	<select id="avgReviewRating" parameterType="int" resultType="double">
+		SELECT ROUND(AVG(review_rating),2) as review_rating
+		FROM tb_course a
+		JOIN course_review b 
+		ON a.course_id = b.course_id 
+		WHERE a.course_id = #{course_id}
+	</select>
+	
+	<!-- 강좌 상세 보여주기 -->
+	<select id="selectCourseDetail" parameterType="int" resultType="CourseDto">
+		SELECT tb_course.course_id, course_nm, course_reg_start_date, course_reg_end_date, course_start_date
+		, course_end_date, course_day, course_time, course_target, course_cost, course_info, course_cate_cd, tb_course.user_id
+		, course_applicants, croom_name, user_name, croom_mpop, course_rating, review_cnt, classroom.croom_id
+		FROM tb_course
+		JOIN tb_user
+		ON tb_course.user_id = tb_user.user_id 
+		JOIN classroom
+		ON classroom.croom_id = tb_course.croom_id
+		WHERE tb_course.course_id = #{course_id}
+	</select>
+	
+	<!-- 검색된 강좌리스트의 수 -->
+	<select id="searchResultCnt" parameterType="CourseSearchItem" resultType="int">
+		SELECT count(*)
+		FROM tb_course 
+		WHERE true 
+		<include refid="searchCate" />
+		<include refid="searchTarget" /> 
+		<include refid="searchCourseStat" /> 
+	</select> 
+
+	<!-- 검색된 강좌 리스트 -->
+	<select id="searchSelectPage" parameterType="CourseSearchItem" resultType="CourseDto">
+		<include refid="selectFromCourse" />
+		WHERE true 
+		<include refid="searchCate" />
+		<include refid="searchTarget" />
+		<include refid="searchCourseStat" />
+		<include refid="orderby" />
+		LIMIT #{pageSize} OFFSET #{offset}
+	</select> 
+	
+	<!-- 등록된 강좌 수정 -->
+	<update id="update" parameterType="CourseDto">
+		UPDATE tb_course
+		SET course_nm=#{course_nm}, course_reg_start_date=#{course_reg_start_date}::date, course_reg_end_date=#{course_reg_end_date}::date
+		, course_start_date=#{course_start_date}::date, course_end_date=#{course_end_date}::date, course_day=#{course_day}, course_time=#{course_time}, course_target=#{course_target}
+		, course_cost=#{course_cost}, course_info=#{course_info}, croom_id=#{croom_id}, course_cate_cd=#{course_cate_cd}
+		WHERE course_id=#{course_id}
+	</update>
+	
+	<!-- 수강신청/취소 시 신청인원 업데이트 -->
+	<update id="updateApplicantCnt" parameterType="map">
+		UPDATE tb_course
+		SET course_applicants = course_applicants + #{cnt}
+		WHERE course_id = #{course_id}
+	</update>
+	
+	<!-- 수강후기 작성/삭제 시 후기 개수 업데이트 -->
+	<update id="updateReviewCnt" parameterType="map">
+		UPDATE tb_course 
+		SET review_cnt = review_cnt + #{cnt}
+		WHERE course_id = #{course_id}
+	</update>
+	
+	<!-- 이미지 등록 -->
+	<insert id="imageInsert" parameterType="CourseImageDto">
+		INSERT INTO course_image (uuid, fileName, uploadPath, course_id)
+		VALUES(#{uuid}, #{fileName}, #{uploadPath}, #{course_id})
+	</insert>
+	
+	<!-- 수강신청 -->
+	<insert id="attendInsert" parameterType="AttendDto">
+		INSERT INTO attend
+		(course_id, user_id, attend_datetime)
+		VALUES(#{course_id}, #{user_id}, now())
+	</insert>
+	
+	<!-- 강좌생성 -->
+	<insert id="insert" parameterType="CourseDto">
+		<!-- order 속성값 AFTER로 인해서 본 쿼리문(INSERT)이 실행이 된 뒤에 <selectkey> 태그 내의 쿼리문이 실행이 되며 tb_course테이블의 'course_id'값 중 가장 큰 값을 CourseDto에 있는 course_id 변수에 반환시킨다 -->
+		<selectKey resultType="int" keyProperty="course_id" order="AFTER">
+			SELECT MAX(course_id) FROM tb_course
+		</selectKey>
+		INSERT INTO tb_course (course_nm, course_reg_start_date, course_reg_end_date, course_start_date, course_end_date
+		, course_day, course_time, course_target, course_cost, course_info, user_id, croom_id, course_cate_cd)
+		VALUES(#{course_nm}, #{course_reg_start_date}::date, #{course_reg_end_date}::date, #{course_start_date}::date, #{course_end_date}::date
+		, #{course_day}, #{course_time}, #{course_target}, #{course_cost}, #{course_info}, #{user_id}, #{croom_id}, #{course_cate_cd})
+	</insert>
+	
+	<!-- 지정 강좌 이미지 전체 삭제 -->
+	<delete id="deleteImageAll" parameterType="int">
+		DELETE FROM course_image 
+		WHERE course_id = #{course_id}
+	</delete>
+	
+	<!-- 등록된 강좌 삭제 -->
+	<delete id="delete" parameterType="int">
+		DELETE FROM tb_course
+		WHERE course_id = #{course_id}
+	</delete>
+	
+	<!-- 테스트용 -->
+	<delete id="deleteAll">
+		DELETE FROM tb_course
+	</delete>
+</mapper>
+  	

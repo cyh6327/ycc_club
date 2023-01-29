@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.youngtvjobs.ycc.club.clubMapper" >
+
+	<sql id="selectAllClub">
+		select *, (select count(*) from club_member cm where club_id = c.club_id)
+		from club c
+	</sql>
+
+	<select id="clubListSelect" resultType="ClubDto">
+		<include refid="selectAllClub" />
+	</select>
+	
+	<select id="popularClub" resultType="ClubDto">
+		<include refid="selectAllClub" />
+		order by count desc
+		limit 3
+	</select>
+	
+	<select id="myClubSelect" resultType="ClubDto" parameterType="String">
+		select * 
+		from club c
+		join club_member cm 
+		on c.club_id = cm.club_id 
+		where user_id = #{user_id}
+	</select>
+	
+	<select id="clubSelect" resultType="ClubDto" parameterType="Integer">
+		select * 
+		from club c
+		left join club_board cb 
+		on c.club_id = cb.club_id 
+		where c.club_id = #{club_id}
+	</select>
+	
+	<select id="postSelect" resultType="ClubDto" parameterType="Integer">
+		select * 
+		from club_board cb 
+		left join club_board_comment cbc 
+		on cb.club_article_id = cbc.club_article_id
+		where cb.club_article_id = #{club_article_id}
+	</select>
+	
+	<insert id="clubInsert" parameterType="map">
+		INSERT INTO public.club
+		(club_title, club_create_time, club_info, club_master_id)
+		VALUES(#{club_title}, now(), #{club_info}, #{club_master_id})
+	</insert>
+	
+	<insert id="commentInsert" parameterType="map">
+		INSERT INTO public.club_board_comment
+		(club_comment, club_comment_time, user_id, club_article_id)
+		VALUES(#{club_comment}, now(), #{user_id}, #{club_article_id})
+	</insert>
+	
+	<!-- insert후 키 값 가져오기
+	useGeneratedKeys="true" keyProperty="변수명" keyColumn="Sql컬럼명"
+	insert후 redirect시 /club/board/view 로 이동하는데 그 때 insert된 게시글의 club_article_id 파라미터를 넘겨주기 위해서 사용-->
+	<insert id="postInsert" parameterType="map" useGeneratedKeys="true" keyProperty="keyNum" keyColumn="club_article_id">
+		INSERT INTO public.club_board
+		(club_article_title, club_article_content, club_board_upload_time, club_article_viewcnt, club_id, user_id)
+		VALUES(#{club_article_title}, #{club_article_content}, now(), 0, #{club_id}, #{user_id})
+	</insert>
+	
+	<update id="updatePost" parameterType="map">
+		UPDATE public.club_board
+		SET club_article_title=#{club_article_title}, club_article_content=#{club_article_content}
+		WHERE club_article_id=#{club_article_id}
+	</update>
+	
+	<delete id="deletePost" parameterType="Integer">
+		DELETE FROM public.club_board
+		WHERE club_article_id=#{club_article_id}
+	</delete>
+ 
+	
+</mapper>

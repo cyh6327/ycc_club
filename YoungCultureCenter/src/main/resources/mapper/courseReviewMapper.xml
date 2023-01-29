@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.youngtvjobs.ycc.course.courseReviewMapper">
+
+	<!-- 리뷰 불러오기 -->
+	<select id="selectAll" parameterType="int" resultType="ReviewDto">
+		SELECT review_id, review_content, to_char(review_datetime, 'YYYY-MM-DD HH24:MI:SS') as review_datetime
+						, to_char(review_updated_datetime, 'YYYY-MM-DD HH24:MI:SS') as review_updated_datetime, review_rating, course_id, user_id
+		FROM course_review
+		WHERE course_id = #{course_id}
+		ORDER BY review_updated_datetime desc, review_datetime desc , review_id
+	</select>
+	
+	<!-- <select id="courseReviewCnt" parameterType="CourseSearchItem" resultType="int">
+		SELECT count(*)
+		FROM course_review
+		WHERE course_id = #{course_id}
+	</select> -->
+	
+	<update id="update" parameterType="ReviewDto">
+		UPDATE course_review
+		SET review_content = #{review_content}, review_updated_datetime = now(), review_rating = #{review_rating}
+		WHERE review_id = #{review_id}
+	</update>
+	
+	<delete id="delete" parameterType="int">
+		DELETE FROM course_review
+		WHERE review_id=#{review_id}
+	</delete>
+	
+	<insert id="insert" parameterType="ReviewDto">
+		INSERT INTO course_review (review_content, review_datetime, review_updated_datetime, review_rating, course_id, user_id)
+		VALUES(#{review_content}, now(), now(), #{review_rating}, #{course_id}, #{user_id})
+	</insert>
+</mapper>

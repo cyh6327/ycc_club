@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.youngtvjobs.ycc.member.inquiryMapper">
+  
+    <!-- 아이디가 일치하는 문의 결과 조회 -->
+  <sql id="selectFromInquiry">
+  	select * from inq_board
+  	where user_id = #{id}
+  </sql>
+  
+    <!-- 최신순 정렬 -->
+  <sql id="orderByNew">
+ 	order by inq_date desc, inq_id desc
+ 	limit #{pageSize} offset #{offset}
+  </sql>
+  
+    <!-- 지정된 기간(버튼)으로 조회 -->
+  <sql id="settedInterval">
+  	and 
+	inq_date between (now() - CAST(#{settedInterval} AS INTERVAL)) and now()
+  </sql>  
+    
+  <select id ="selectPage" parameterType="map" resultType="InquiryDto">
+  	<include refid="selectFromInquiry" />
+  	<if test='"settedInterval"!=null'>
+	  	<include refid="settedInterval" />
+  	</if>
+  	<include refid="orderByNew" />
+  </select>
+    <!-- 지정된 기간(버튼)으로 조회 : 페이지네이션 -->    
+  <select id="selectPageCnt" parameterType="map" resultType="int">
+  	select count(*)
+	from inq_board
+	where user_id = #{id}
+	<include refid="settedInterval" />
+  </select>
+    
+    <!-- 직접 입력된 기간 조회 -->
+    <sql id="startTOEnd">
+	    and 
+	  	inq_date between #{startDate}::Date and #{endDate}::Date
+    </sql>
+    
+  <select id ="selectPageByInput" parameterType="map" resultType="InquiryDto">
+  	<include refid="selectFromInquiry" />
+  	<include refid="startTOEnd" />
+	<include refid="orderByNew" />  
+  </select>
+   <!-- 직접 입력된 기간 조회 : 페이지네이션 -->
+    <select id="selectPageByInputCnt" parameterType="map" resultType="int">
+  	select count(*)
+	from inq_board
+	where user_id = #{id}
+	<include refid="startTOEnd" />	
+  </select>
+  
+  
+  <!-- 1:1문의 작성하기 : insert -->
+  <insert id="insert" parameterType="InquiryDto">
+  	INSERT INTO inq_board
+	(inq_cate, user_id,  inq_title, inq_content, inq_date)
+	VALUES(#{inq_cate}, #{user_id},  #{inq_title}, #{inq_content}, #{inq_date})
+  </insert>
+  
+  <!--1:1문의 읽기 : select  -->
+  <select id="select" parameterType="map" resultType="InquiryDto">
+    <include refid="selectFromInquiry" />
+  	and inq_id =#{inq_id}
+  </select>
+	
+	
+  	
+  
+  
+  </mapper>

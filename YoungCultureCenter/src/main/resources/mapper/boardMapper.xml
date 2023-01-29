@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<!-- article mapper -->  
+<mapper namespace="com.youngtvjobs.ycc.board.boardMapper" >
+
+	<sql id="selectFromBoard">
+		SELECT article_id, article_date, article_Board_type, user_id, 
+		article_title, article_contents, article_viewcnt
+		FROM article
+	</sql>
+	
+	<sql id="searchCondition">
+		<choose>
+			<when test='option=="T"'>
+				AND article_title LIKE concat('%', #{keyword}, '%')
+			</when>
+			<when test='option=="W"'>
+				AND user_id LIKE concat('%', #{keyword}, '%')
+			</when>	
+			<otherwise>
+				AND (article_title LIKE concat('%', #{keyword}, '%')
+				OR article_contents LIKE concat('%', #{keyword}, '%'))
+			</otherwise>	
+		</choose>	
+	</sql>
+	
+	<!-- 글쓰기 : article 테이블에 게시글 추가 -->
+	<insert id="writeInsert" parameterType="BoardDto">
+		INSERT INTO article
+			(article_date, article_Board_type, user_id, article_title, article_contents, article_viewcnt)
+		VALUES
+			(now(), #{article_Board_type}, #{user_id}, #{article_title}, #{article_contents}, #{article_viewcnt})
+	</insert>
+	
+	<!-- 수정하기 : article 테이블의 게시글 수정 데이터 가져오기 -->
+	<select id="articleEdit" parameterType="int" resultType="BoardDto">
+		SELECT 
+			article_id, article_Board_type, article_date, user_id, article_title, article_contents, article_viewcnt
+		FROM article
+		where article_id = #{article_id}
+	</select>
+	
+	<!-- 수정하기 :  article 테이블에 게시글 수정(등록버튼 누를 시)-->
+	<update id="update" parameterType="BoardDto">
+		UPDATE article
+		SET article_date=now(),article_Board_type=#{article_Board_type}, article_title=#{article_title}, article_contents=#{article_contents}
+		WHERE article_id= #{article_id} and user_id = #{user_id}
+	</update>
+	
+	<!-- 삭제하기 :  article 테이블에 게시글 삭제-->
+	<delete id="delete" parameterType="int">
+		delete from article 
+		where article_id = #{article_id}	
+	</delete>
+	
+	<!-- 상세보기 : article 테이블에 select하여 게시글 상세보기  -->
+	<select id="postSelect" parameterType="int" resultType="BoardDto">
+		<include refid="selectFromBoard" />
+		where article_id = #{article_id}
+	</select>
+	
+	<!-- 공지사항 게시판 리스트 : article 테이블에 insert된 정보 중 공지사항만 조회한 리스트  -->
+	<select id="nSelectPage" parameterType="map" resultType="BoardDto">
+		<include refid="selectFromBoard" />
+		where article_Board_type ='공지사항'
+		order by article_date desc, article_id desc 
+		limit #{pageSize} offset #{offset}		
+	</select>
+	
+	<!-- 공지사항 : 검색 결과 개수   -->
+	<select id="nSearchResultCnt" parameterType="SearchItem" resultType="int">
+		select count(*) 
+		from article
+		where article_Board_type  = '공지사항'
+		and  true 
+		<include refid="searchCondition" />
+	</select>
+	
+	<!-- 공지사항 : 검색 결과 페이지  -->
+	<select id="nSearchSelectPage" parameterType="SearchItem" resultType="BoardDto">
+		<include refid="selectFromBoard"></include>
+		where article_Board_type = '공지사항'
+		and  true 
+		<include refid="searchCondition" />		
+		order by article_date desc, article_id desc 
+		limit #{pageSize} offset #{offset}		
+	</select>
+	
+	<!-- 이벤트/행사 게시판 리스트 : article 테이블에 insert된 정보 중 이벤트/행사만 조회한 리스트 -->
+	<select id="eSelectPage" parameterType="map" resultType="BoardDto">
+		<include refid="selectFromBoard" />
+		where article_Board_type ='이벤트'
+		order by article_date desc, article_id desc 
+		limit #{pageSize} offset #{offset}		
+	</select>
+	
+	<!-- 이벤트/행사 : 검색 결과 개수  -->
+	<select id="eSearchResultCnt" parameterType="SearchItem" resultType="int">
+		select count(*) 
+		from article
+		where article_Board_type  = '이벤트'
+		and  true 
+		<include refid="searchCondition" />
+	</select>
+	
+	<!-- 이벤트/행사 : 검색 결과 페이지  -->
+	<select id="eSearchSelectPage" parameterType="SearchItem" resultType="BoardDto">
+		<include refid="selectFromBoard"></include>
+		where article_Board_type = '이벤트'
+		and  true 
+		<include refid="searchCondition" />		
+		order by article_date desc, article_id desc 
+		limit #{pageSize} offset #{offset}		
+	</select>
+	
+<!-- 	게시글 상세보기 : 이전글, 다음글 _ title 클릭시 이전글, 다음글로 이동	 -->
+<!-- 	LEAD : 다음행, LAG : 이전행 -->
+<!-- 	([속성],[이동값],[이동후값이없을경우 넣을 값]) over(order by [속성]) as [지정해줄이름] -->
+<!--  	title클릭시 이동하기 때문에 article_id, article_title 속성을 지정해준 뒤  -->
+<!--  	primary key인 article_id로 title을 구해줌 : article_id만 parameter로 필요하기 때문에 Type 을 int로 설정   -->
+	<select id="movePage" parameterType="int" resultType="BoardDto">
+		select * from ( 
+		select article_id, article_title,
+		lead(article_id, 1, 9999) over(order by article_id) as nextId,
+		lead(article_title, 1, '다음글') over(order by article_id) as nextTitle,
+		lag(article_id, 1, 9999) over(order by article_id) as preId,
+		lag(article_title, 1, '이전글') over(order by article_id) as preTitle
+		from article 
+		) as f
+		where article_id = #{article_id}
+		order by article_id  desc
+	</select>
+	
+	<!-- 조회수 증가 : 상세보기 클릭 시 article 테이블에 조회수 증가 update  -->
+	<update id="PlusViewCnt" parameterType="int">
+		update article 
+		set article_viewcnt = article_viewcnt + 1
+		where article_id = #{article_id}
+	</update>
+	
+	
+</mapper>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-config.dtd">
+
+
+<configuration>
+	<typeAliases>
+		<typeAlias alias="AuthDto" type="com.youngtvjobs.ycc.member.AuthDto"/>
+		<typeAlias alias="MemberDto" type="com.youngtvjobs.ycc.member.MemberDto" />
+		<typeAlias alias="InquiryDto" type="com.youngtvjobs.ycc.member.InquiryDto" />
+		
+		<typeAlias alias="CourseDto" type="com.youngtvjobs.ycc.course.CourseDto" />
+		<typeAlias alias="CourseSearchItem" type="com.youngtvjobs.ycc.course.CourseSearchItem"/>
+		<typeAlias alias="CourseImageDto" type="com.youngtvjobs.ycc.course.CourseImageDto" />
+		<typeAlias alias="PageResolver" type="com.youngtvjobs.ycc.course.PageResolver" />
+		<typeAlias alias="ReviewDto" type="com.youngtvjobs.ycc.course.ReviewDto" />
+		<typeAlias alias="AttendDto" type="com.youngtvjobs.ycc.course.AttendDto" />
+		
+		<typeAlias alias="SearchItem" type="com.youngtvjobs.ycc.search.SearchItem" />
+		
+		<typeAlias alias="BoardDto" type="com.youngtvjobs.ycc.board.BoardDto" />
+		
+		<typeAlias alias="ClubDto" type="com.youngtvjobs.ycc.club.ClubDto" />
+		
+		<typeAlias alias="PlaceDto" type="com.youngtvjobs.ycc.rental.PlaceDto" />
+		<typeAlias alias="LockerDto" type="com.youngtvjobs.ycc.rental.LockerDto" />
+		<typeAlias alias="StudyroomDto" type="com.youngtvjobs.ycc.rental.StudyroomDto" />
+		
+		<typeAlias alias="AdminDto" type="com.youngtvjobs.ycc.admin.AdminDto" />
+	</typeAliases>
+</configuration>

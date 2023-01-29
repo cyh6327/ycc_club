@@ -1,0 +1,89 @@
+
+.logo{
+    width: 40px;
+    height: 40px;
+}
+
+/* header */
+.dropdown-hover:hover>.dropdown-menu {
+    display: inline-block;
+}
+.dropdown-hover>.dropdown-toggle:active {
+    /*Without this, clicking will make it sticky*/
+    pointer-events: none;
+}
+
+#header_navi > li {
+    display: inline-block;
+    position: relative;
+}
+#header_navi > li > a {
+    display:block; position:relative; padding-bottom:19px;
+    margin: 50px;
+}
+#header_navi > li > a > img {
+    width:50px; height:50px;
+}
+#header_navi > li > a > span {
+    position:absolute; bottom:0; left:50%; color:#666; line-height:1.462em; white-space:nowrap; transform:translate(-50%, 0)
+}
+
+
+.modal-header {
+    border-bottom: none;
+}
+
+/* .modal-title {
+    font-weight: bold;
+} */
+
+.modal-footer {
+    border-top: none;
+}
+
+#header {
+    border-bottom: 1px solid black ; height:90px;
+}
+
+
+.badge {
+	--bs-badge-font-size: 1em !important;
+}
+
+
+.sub_top {background:#fff; border-bottom:1px solid black; height: 220px;}
+
+
+.pro_box {
+    background-color: #f1f1f1;
+}
+
+table td a{
+    text-decoration: none;
+    color: black;
+}
+
+tr {
+    text-align: center;
+}
+
+.page-item {
+    --bs-pagination-color: black;
+}
+
+.col-form-label{
+    text-align: right;
+}
+
+.btn-danger {
+    text-align: center;
+}
+
+table.table {
+    --bs-table-cell-margin-y: .7rem;
+    --bs-table-cell-margin-x: .5rem;
+}
+
+.table>:not(caption)>*>* {
+    padding: 1rem 1rem;
+}

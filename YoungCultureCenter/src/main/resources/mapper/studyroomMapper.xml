@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<!--
+	작성자 : alwaysFinn(김지호)
+	최초 작성일 : '22. 12. 02
+	마지막 업데이트 : '23.01.05
+	업데이트 내용 : code clean up
+	기능 : 독서실 현재 예약된 내역 불러오기 및 예약하기 + 유효성 검사 하는 mapper 파일로 DB와 연결  
+-->
+  
+  <mapper namespace="com.youngtvjobs.ycc.rental.studyroomMapper">
+
+	  <!-- 현재 예약된 좌석만 가져오는 select문 (조건: 예약 종료 시간이 현재 시간보다 늦은 예약일 경우) -->	  
+	  <select id="studyroomRentalChk" resultType="StudyroomDto">
+	  	select sroom_seat_id, user_id 
+		from studyroom
+		where sroom_rental_etime <![CDATA[ > ]]> now()
+	  </select>
+	  
+	  <!-- user가 예약하는 insert문 (넘겨주는 값 : 좌석번호, 예약 시작 시간, 예약 종료 시간, 사용자) -->
+	  <insert id="insertRentalInfo" parameterType="StudyroomDto">
+	  	INSERT INTO studyroom
+		(sroom_seat_id, sroom_rental_stime, sroom_rental_etime, user_id)
+		VALUES(#{sroom_seat_id}, now(), #{sroom_rental_etime}, #{user_id})
+	  </insert>	  
+	  
+	  <!-- for 유효성 체크#1 현재 예약 내역 중 해당 user의 예약 내역이 있는지 확인하는 seelct 문 -->
+	  <select id="rentalChk" parameterType="StudyroomDto" resultType="int">
+	    select count(*)
+		from studyroom
+		where sroom_rental_etime <![CDATA[ > ]]> now()
+		and user_id = #{user_id}
+	  </select>
+  </mapper>
