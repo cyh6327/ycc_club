@@ -24,8 +24,10 @@
 		select * 
 		from club c
 		join club_member cm 
-		on c.club_id = cm.club_id 
-		where user_id = #{user_id}
+		on c.club_id = cm.club_id
+		left join club_board cb 
+		on cm.club_id = cb.club_id  
+		where cm.user_id = #{user_id}
 	</select>
 	
 	<select id="clubSelect" resultType="ClubDto" parameterType="Integer">
@@ -36,12 +38,24 @@
 		where c.club_id = #{club_id}
 	</select>
 	
-	<select id="postSelect" resultType="ClubDto" parameterType="Integer">
-		select * 
+<!-- 	<select id="postSelect" resultType="ClubDto" parameterType="Integer">
+		select *
 		from club_board cb 
 		left join club_board_comment cbc 
 		on cb.club_article_id = cbc.club_article_id
 		where cb.club_article_id = #{club_article_id}
+	</select> -->
+	
+	<select id="postSelect" resultType="ClubDto" parameterType="Integer">
+		select *
+		from club_board cb 
+		where cb.club_article_id = #{club_article_id}
+	</select>
+	
+	<select id="selectClubComment" resultType="ClubDto" parameterType="Integer">
+		select *
+		from club_board_comment cbc
+		where cbc.club_article_id = #{club_article_id}
 	</select>
 	
 	<insert id="clubInsert" parameterType="map">

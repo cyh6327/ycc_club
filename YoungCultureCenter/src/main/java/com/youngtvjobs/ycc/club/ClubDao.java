@@ -24,4 +24,6 @@ public interface ClubDao {
 	int updatePost(Map<String, Object> map) throws Exception;
 
 	int deletePost(Integer club_article_id) throws Exception;
+
+	List<ClubDto> selectClubComment(Integer club_article_id) throws Exception;
 }

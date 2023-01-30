@@ -11,11 +11,14 @@
 <body>
   <!-- header -->
   <%@include file="/WEB-INF/views/header.jsp"%>
+  
+  <c:set var="clubSelect" value="${clubSelect}"></c:set>
+  <c:set var="myClubList" value="${myClubList }"></c:set>
 
   <!--start container-->
   <div class="container">
     <br>
-    <c:set var="clubSelect" value="${clubSelect}"></c:set>
+    
     <h3>${clubSelect[0].club_title}</h3>
     <hr /><br>
     <div class="input-group" style="width: 200px; margin-left:80%; padding-bottom: 20px;">
@@ -40,7 +43,7 @@
       <tbody>
       <c:forEach var="clubDto" items="${clubSelect }">
         <tr>
-          <th scope="row"><a href="<c:url value='/club/board/view?club_article_id=${clubDto.club_article_id }' />" class="text-decoration-none">${clubDto.club_article_title }</a></th>
+          <th scope="row"><a href="<c:url value='/club/board/view?club_id=${clubDto.club_id }&club_article_id=${clubDto.club_article_id }' />" class="text-decoration-none">${clubDto.club_article_title }</a></th>
           <td>${clubDto.user_id }</td>
           <td><fmt:formatDate pattern="yyyy-MM-dd" value="${clubDto.club_board_upload_time }" /></td>
           <td>${clubDto.club_article_viewcnt }</td>
@@ -70,12 +73,7 @@
     </c:if>
     
     <!--글쓰기 버튼-->
-	<sec:authentication property="principal" var="pinfo"/>
-	<sec:authorize access="isAuthenticated()">
-		<c:if test="${pinfo.member.user_id eq postSelect[0].user_id}">
-		<a class="btn btn-primary float-end" href="<c:url value='/club/board/write?club_id=${param.club_id }' />" role="button">글쓰기</a>
-		</c:if>
-	</sec:authorize>
+	<a id="writeBtn" class="btn btn-primary float-end" href="<c:url value='/club/board/write?club_id=${param.club_id }' />" role="button">글쓰기</a>
     
     <div class="bottomsearch" style="display: flex; margin-left: 30%; margin-top: 50px;">
       <select class="form-select form-select-sm" aria-label=".form-select-sm example"
@@ -87,6 +85,34 @@
       <button type="button" class="btn btn-primary" style="margin-left: 10px;">검색</button>
     </div>
   </div>
+  
+  <script>
+  $(document).ready(function(){
+	  
+	  let list = new Array();
+ 	  const url = new URL(window.location.href)
+ 	  console.log(url)
+  	  const urlParams = url.searchParams;
+	  var club_id = urlParams.get("club_id")
+	  
+	  <c:forEach items="${myClubList}" var="clubDto">
+		console.log("${clubDto.club_id}");	// 위에 list나 변수를 선언하고 alert 자리에 담으면 차례대로 값을 받는다.
+		list.push("${clubDto.club_id}");
+	  </c:forEach>
+	 
+ 	  if(!list.includes(club_id)) {
+ 		 $('#writeBtn').hide()
+ 	  }
+		  
+  })
+  
+  
+  
+  
+  
+  
+  
+  </script>
 	  
 	<!-- footer include -->
 	<%@include file="/WEB-INF/views/footer.jsp"%>

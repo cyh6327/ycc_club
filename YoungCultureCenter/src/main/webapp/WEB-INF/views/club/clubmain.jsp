@@ -47,23 +47,23 @@
 		        <h1 class="modal-title fs-5" id="exampleModalLabel">동아리 생성</h1>
 		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 		      </div>
-		      <form id="form" class="frm" action="<c:url value='/club/create'/>" method="POST">
+		      <form id="form" class="frm" action="" method="POST" >
 		      <c:set var="user_id" value="${user_id}"></c:set>
 		      <input type="hidden" name="user_id" value="${user_id}" />
 		      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 		      <div class="modal-body">
 		        	<div class="text-start mb-2">
 			        	<label for="name">동아리명</label>
-						<input type="text" id="name" name="title" required minlength="2" maxlength="12" size="20">
+						<input type="text" name="club_title" required minlength="2" maxlength="12" size="20">
 					</div>
 					<div class="text-start">
 			        	<p style="margin-bottom: 5px;">소개글</p>
-						<textarea class="w-100 h-75" name="info" rows="5" cols="3"></textarea>
+						<textarea class="w-100 h-75" name="club_info" rows="5" cols="3"></textarea>
 					</div>
 		      </div>
 		      <div class="modal-footer">
 		        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-		        <button type="submit" class="btn btn-primary">생성하기</button>
+		        <button type="button" id="createBtn" class="btn btn-primary">생성하기</button>
 		      </div>
 		      </form>
 		    </div>
@@ -113,9 +113,7 @@
 							<a href="<c:url value='/club/board?club_id=${clubDto.club_id }'/>" method="GET" style="text-decoration: none; text-decoration-color: none;">
 							<h4>${clubDto.club_title }</h4>
 							<small class="text-muted">동아리장 : ${clubDto.club_master_id } | 멤버수 : ${clubDto.count }명 | 생성일 : <fmt:formatDate pattern="yyyy-MM-dd" value="${clubDto.club_create_time }" /></small></a>
-							<a href="#" class="text-reset text-decoration-none"><p class="mb-2">가입 인사 합니다.</p></a>
-							<a href="#" class="text-reset text-decoration-none"><p class="mb-2">게시글 제목 2</p></a>
-							<a href="#" class="text-reset text-decoration-none"><p class="mb-2">안녕하세요~안녕하세요~안녕하세요~안녕하세요~안녕하세요~안녕하세요~안녕하세요~안녕하세요~안녕하세요~안녕하세요~안녕하세요~안녕하세요~안녕하세요~</p></a>
+							<a href="#" class="text-reset text-decoration-none"><p class="mb-2">${clubDto.club_article_title }</p></a>
 						</div>
 					</div>
 					<hr>
@@ -182,7 +180,45 @@
   
 	</div> <!-- 컨테이너 end -->
 	
-
+<script>
+  $(document).ready(function(){
+	  
+		let formCheck = function() {
+			if($('input[name=club_title]').val() == "") {
+				alert("동아리 이름을 입력해 주세요.")
+				return false
+			}	
+			if($('textarea[name=club_info]').val() == "") {
+				alert("동아리 소개글을 작성해 주세요.")
+				return false
+			}	
+			return true;
+		}
+		
+		$('#createBtn').on("click", function() {
+			let form = $('#form')
+			
+			form.attr("action", "<c:url value='/club/create'/>")
+			form.attr("method", "post")
+			
+			if(formCheck()) {
+				form.submit()
+				alert("동아리가 생성되었습니다!")
+			}
+				
+		})
+		
+		/* if(!formCheck()) */
+		
+			
+	  
+/* 	  <c:forEach items="${myClubList}" var="clubDto">
+		console.log("${clubDto.club_article_title}");	// 위에 list나 변수를 선언하고 alert 자리에 담으면 차례대로 값을 받는다.
+	  </c:forEach> */
+	  
+  })
+  
+</script>
 
 	<!-- footer include -->
 	<%@include file="/WEB-INF/views/footer.jsp"%>

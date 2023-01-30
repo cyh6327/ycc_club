@@ -63,4 +63,9 @@ public class ClubDaoImpl implements ClubDao{
 	public int deletePost(Integer club_article_id) throws Exception {
 		return session.delete(namespace+"deletePost", club_article_id);
 	}
+
+	@Override
+	public List<ClubDto> selectClubComment(Integer club_article_id) throws Exception {
+		return session.selectList(namespace+"selectClubComment", club_article_id);
+	}
 }

@@ -32,12 +32,10 @@ public class ClubDto {
 	private Integer club_comment_id;
 	private String club_comment;
 	private Date club_comment_time;
-	
+
 	public ClubDto() {
 		// TODO Auto-generated constructor stub
 	}
-	
-	
 
 	public ClubDto(Integer club_id, String club_title, Date club_create_time, String club_info, String club_master_id,
 			int count, Integer club_article_id, String club_article_title, String club_article_content,
@@ -59,6 +57,7 @@ public class ClubDto {
 		this.club_comment_id = club_comment_id;
 		this.club_comment = club_comment;
 		this.club_comment_time = club_comment_time;
+		
 	}
 
 	public Integer getClub_id() {
@@ -209,7 +208,8 @@ public class ClubDto {
 				&& Objects.equals(club_comment_time, other.club_comment_time)
 				&& Objects.equals(club_create_time, other.club_create_time) && Objects.equals(club_id, other.club_id)
 				&& Objects.equals(club_info, other.club_info) && Objects.equals(club_master_id, other.club_master_id)
-				&& Objects.equals(club_title, other.club_title) && count == other.count
+				&& Objects.equals(club_title, other.club_title)
+				&& count == other.count
 				&& Objects.equals(user_id, other.user_id);
 	}
 
@@ -223,5 +223,5 @@ public class ClubDto {
 				+ ", club_comment_id=" + club_comment_id + ", club_comment=" + club_comment + ", club_comment_time="
 				+ club_comment_time + "]";
 	}
-	
+
 }

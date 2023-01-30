@@ -47,7 +47,7 @@ public class ClubController
 		    List<ClubDto> myClubList = clubService.getMyClub(user_id);
 		    m.addAttribute("myClubList", myClubList);
 		    System.out.println("myClubList = " + myClubList);
-			 
+			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -59,10 +59,10 @@ public class ClubController
 	@PostMapping("/club/create")
 	public String createClub(HttpServletRequest request, Authentication auth) {
 		
-		String club_title = request.getParameter("title");
+		String club_title = request.getParameter("club_title");
 		System.out.println("club_title = " + club_title);
 		
-		String club_info = request.getParameter("info");
+		String club_info = request.getParameter("club_info");
 		System.out.println("club_info = " + club_info);
 		
 		String club_master_id = auth.getName(); 
@@ -74,7 +74,11 @@ public class ClubController
 	    map.put("club_master_id", club_master_id);
 	    
 	    try {
-			int clubCreate = clubService.createClub(map);
+	    	int clubCreate = clubService.createClub(map);
+			if (clubCreate != 1) {
+				throw new Exception("Create Failed");
+			}
+			return "redirect:/club";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -83,14 +87,19 @@ public class ClubController
 	}
 
 	@RequestMapping("/club/board")
-	public String clubBoard(HttpServletRequest request, Model m, @RequestParam("club_id") String str) {
+	public String clubBoard(HttpServletRequest request, Model m, Authentication auth, 
+			@RequestParam("club_id") String str) {
 		
 		Integer club_id = Integer.parseInt(str);
+		String user_id = auth.getName(); 
 		
 		try {
 			List<ClubDto> clubSelect = clubService.clubSelect(club_id);
 			m.addAttribute("clubSelect", clubSelect);
 			System.out.println("clubSelect = " + clubSelect);
+			
+			List<ClubDto> myClubList = clubService.getMyClub(user_id);
+		    m.addAttribute("myClubList", myClubList);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -105,14 +114,21 @@ public class ClubController
 			@RequestParam("club_article_id") String str) {
 		
 		Integer club_article_id = Integer.parseInt(str);
+		String user_id = auth.getName(); 
+		m.addAttribute("user_id", user_id);
 		
 		try {
 			List<ClubDto> postSelect = clubService.postSelect(club_article_id);
 			m.addAttribute("postSelect", postSelect);
+			System.out.println("postSelect=" + postSelect);
+		
+			List<ClubDto> commentSelect = clubService.selectClubComment(club_article_id);
+			m.addAttribute("commentSelect", commentSelect);
+			System.out.println("commentSelect=" + commentSelect);
+		 
+			List<ClubDto> myClubList = clubService.getMyClub(user_id);
+			m.addAttribute("myClubList", myClubList);
 			
-			String user_id = auth.getName(); 
-			m.addAttribute("user_id", user_id);
-		    System.out.println("user_id = " + user_id);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -146,10 +162,12 @@ public class ClubController
 		String club_article_title = request.getParameter("post_title");
 		String club_article_content = request.getParameter("post_content");
 		String str = request.getParameter("club_article_id");
+		String str2 = request.getParameter("club_id");
 		Integer club_article_id = Integer.parseInt(str);
 		
 		// redirect시 /club/board/view의 파라미터를 전달
 		re.addAttribute("club_article_id", str);
+		re.addAttribute("club_id", str2);
 
 		Map<String, Object> map = new HashMap<String, Object>();
 	    map.put("club_article_title", club_article_title);

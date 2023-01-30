@@ -54,8 +54,8 @@
     	   let url = window.location.href
     	   console.log(url)
     	   
-    	   $('.summernote').summernote('code', content);
-    	   
+    	   /* $('.summernote').summernote('code', content); */
+    	   $('.summernote').val(content)
            $('.summernote').summernote({
            	   placeholder:"내용을 입력하세요.",
                height: 600,
@@ -91,14 +91,18 @@
 				let form = $("#form");
 				
 				if(url.includes('edit')){
-					alert("edit")
 					form.attr("action", "<c:url value ='/club/board/edit'/>")
+					if(formCheck()) {
+						form.submit()
+						alert("수정되었습니다.")
+					}
 				} else {
 					form.attr("action", "<c:url value ='/club/board/write'/>")
-					
+					if(formCheck()) {
+						form.submit()
+						alert("게시글이 등록되었습니다.")
+					}
 				}
-				
-				form.attr("method", "post")
 				
 				if(formCheck())
 					form.submit()

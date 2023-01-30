@@ -62,4 +62,9 @@ public class ClubServiceImpl implements ClubService {
 		return clubDao.deletePost(club_article_id);
 	}
 
+	@Override
+	public List<ClubDto> selectClubComment(Integer club_article_id) throws Exception {
+		return clubDao.selectClubComment(club_article_id);
+	}
+
 }
