@@ -5,7 +5,7 @@ import java.util.Map;
 
 public interface ClubService {
 
-	List<ClubDto> getClubList() throws Exception;
+	List<ClubDto> getClubList(SearchItem sc) throws Exception;
 
 	List<ClubDto> getPopularClub() throws Exception;
 
@@ -13,7 +13,7 @@ public interface ClubService {
 
 	int createClub(Map map) throws Exception;
 
-	List<ClubDto> clubSelect(Integer club_id) throws Exception;
+	List<ClubDto> clubSelect(Map<String, Object> map) throws Exception;
 
 	int commentRegist(Map<String, Object> map) throws Exception;
 

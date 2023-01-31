@@ -30,7 +30,7 @@
       </select>
     </div>
     <!--게시판 부분-->
-    <c:if test="${clubSelect[0].club_article_id != null }">
+    <%-- <c:if test="${clubSelect[0].club_article_id != null }"> --%>
     <table class="table table-hover">
       <thead>
         <tr>
@@ -51,29 +51,33 @@
 	  </c:forEach>
       </tbody>
     </table>
-    <!--창 하단 페이지 숫자-->
-    <nav aria-label="Page navigation">
-      <ul class="pagination justify-content-center">
-        <li class="page-item disabled">
-          <a class="page-link" href="#" tabindex="-1" aria-disabled="true">이전</a>
-        </li>
-        <li class="page-item"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item"><a class="page-link" href="#">4</a></li>
-        <li class="page-item"><a class="page-link" href="#">5</a></li>
-        <li class="page-item">
-          <a class="page-link" href="#">다음</a>
-        </li>
-      </ul>
-    </nav>
-    </c:if>
-        <c:if test="${clubSelect[0].club_article_id == null }">
-    	<p class="text-center fw-bold">게시글이 없습니다.</p>
-    </c:if>
     
     <!--글쓰기 버튼-->
 	<a id="writeBtn" class="btn btn-primary float-end" href="<c:url value='/club/board/write?club_id=${param.club_id }' />" role="button">글쓰기</a>
+	
+    <!-- 페이지네이션 -->
+	<nav class="m-5" aria-label="Page navigation example">
+		  <ul class="pagination justify-content-center">
+			<c:if test="${totalCnt == null || totalCnt == 0 }">
+				<div>게시물이 없습니다.</div>
+			</c:if>
+			<c:if test="${totalCnt != null || totalCnt != 0 }">
+				<c:if test="${pr.showPrev }">
+					<li class="page-item"><a class="page-link" 
+					href="<c:url value="/club/board${pr.sc.getQueryString(pr.beginPage-1) }&club_id=${param.club_id }" />">&lt; </a></li>
+				</c:if>
+				<c:forEach var="i" begin="${pr.beginPage }" end="${pr.endPage }">
+					<li class="page-item"><a class="page-link" 
+					href="<c:url value="/club/board${pr.sc.getQueryString(i)}&club_id=${param.club_id }" />">${i }</a></li>
+				</c:forEach>
+				<c:if test="${pr.showNext }">
+					<li class="page-item"><a class="page-link" 
+					href="<c:url value="/club/board${pr.sc.getQueryString(pr.endPage+1) }&club_id=${param.club_id }" />">&gt; </a></li>
+				</c:if>
+			</c:if>
+		</div>
+		</ul>
+	</nav>
     
     <div class="bottomsearch" style="display: flex; margin-left: 30%; margin-top: 50px;">
       <select class="form-select form-select-sm" aria-label=".form-select-sm example"

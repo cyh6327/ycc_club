@@ -29,10 +29,10 @@ public class ClubController
 	ClubDto clubDto;
 
 	@GetMapping("/club")
-	public String clubMain(HttpServletRequest request, Model m, Authentication auth) {
+	public String clubMain(HttpServletRequest request, Model m, SearchItem sc, Authentication auth) {
 		
 		try {
-			List<ClubDto> cList = clubService.getClubList();
+			List<ClubDto> cList = clubService.getClubList(sc);
 			m.addAttribute("cList", cList);
 			System.out.println("cList = " + cList);
 			
@@ -47,6 +47,13 @@ public class ClubController
 		    List<ClubDto> myClubList = clubService.getMyClub(user_id);
 		    m.addAttribute("myClubList", myClubList);
 		    System.out.println("myClubList = " + myClubList);
+		    
+		    int totalCnt = clubService.getClubList(sc).get(0).getCount();
+		    System.out.println("totalCnt = " + totalCnt);
+			m.addAttribute("totalCnt", totalCnt);
+			
+			PageResolver pageResolver = new PageResolver(totalCnt, sc);
+			m.addAttribute("pr", pageResolver);
 			
 			
 		} catch (Exception e) {
@@ -93,15 +100,21 @@ public class ClubController
 		Integer club_id = Integer.parseInt(str);
 		String user_id = auth.getName(); 
 		
+		Map<String, Object> map = new HashMap<String, Object>();
+	    map.put("club_id", club_id);
+	    map.put("pageSize", sc.getPageSize());
+	    map.put("offset", sc.getOffset());
+		
 		try {
-			List<ClubDto> clubSelect = clubService.clubSelect(club_id);
+			List<ClubDto> clubSelect = clubService.clubSelect(map);
 			m.addAttribute("clubSelect", clubSelect);
 			System.out.println("clubSelect = " + clubSelect);
 			
 			List<ClubDto> myClubList = clubService.getMyClub(user_id);
 		    m.addAttribute("myClubList", myClubList);
 		    
-		    int totalCnt = clubService.clubSelect(club_id).get(0).getCount();
+		    int totalCnt = clubService.clubSelect(map).get(0).getCount();
+		    m.addAttribute("totalCnt", totalCnt);
 		    PageResolver pageResolver = new PageResolver(totalCnt, sc);
 			m.addAttribute("pr", pageResolver);
 		    
@@ -119,6 +132,7 @@ public class ClubController
 			@RequestParam("club_article_id") String str) {
 		
 		Integer club_article_id = Integer.parseInt(str);
+		System.out.println("club_article_id = " + club_article_id);
 		String user_id = auth.getName(); 
 		m.addAttribute("user_id", user_id);
 		

@@ -6,12 +6,16 @@
 <mapper namespace="com.youngtvjobs.ycc.club.clubMapper" >
 
 	<sql id="selectAllClub">
-		select *, (select count(*) from club_member cm where club_id = c.club_id)
+<!-- 		select *, (select count(*) from club_member cm where club_id = c.club_id)
+		from club c -->
+		select *, (select count(*) as club_member_cnt from club_member cm where club_id = c.club_id), 
+		(select count(*) from club c)
 		from club c
 	</sql>
 
-	<select id="clubListSelect" resultType="ClubDto">
+	<select id="clubListSelect" resultType="ClubDto" parameterType="SearchItem">
 		<include refid="selectAllClub" />
+		limit #{pageSize} offset #{offset}
 	</select>
 	
 	<select id="popularClub" resultType="ClubDto">
@@ -30,12 +34,21 @@
 		where cm.user_id = #{user_id}
 	</select>
 	
-	<select id="clubSelect" resultType="ClubDto" parameterType="Integer">
-		select * 
+	<select id="clubSelect" resultType="ClubDto" parameterType="map">
+<!--  		select * 
+		from club c
+		left join club_board cb 
+		on c.club_id = cb.club_id 
+		where c.club_id = #{club_id} -->
+		select *, 
+		(select count(*)
+		from club_board cb 
+		where cb.club_id = #{club_id})
 		from club c
 		left join club_board cb 
 		on c.club_id = cb.club_id 
 		where c.club_id = #{club_id}
+		limit #{pageSize} offset #{offset}
 	</select>
 	
 <!-- 	<select id="postSelect" resultType="ClubDto" parameterType="Integer">

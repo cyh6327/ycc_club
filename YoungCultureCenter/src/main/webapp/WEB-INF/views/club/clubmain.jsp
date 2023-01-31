@@ -138,7 +138,7 @@
 							<div class="list_info">
 								<div class="text-start mt-2"><a href="<c:url value='/club/board?club_id=${clubDto.club_id }' />">${clubDto.club_title }</a></div>
 								<div class="text-start">${clubDto.club_info }</div>
-								<div class="text-muted text-start mt-2">동아리장 : ${clubDto.club_master_id } | 멤버 : ${clubDto.count }명</div>
+								<div class="text-muted text-start mt-2">동아리장 : ${clubDto.club_master_id } | 멤버 : ${clubDto.club_member_cnt }명</div>
 							</div>
 						</div>
 		    		</li>
@@ -147,24 +147,29 @@
    		</div>
 	    
 	    
-    <!-- 페이지 네비게이션 -->
-    <nav aria-label="Page navigation example">
-      <ul class="pagination justify-content-center">
-        <li class="page-item">
-          <a class="page-link" href="#" aria-label="Previous">
-            <span aria-hidden="true">&laquo;</span>
-          </a>
-        </li>
-        <li class="page-item"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item">
-          <a class="page-link" href="#" aria-label="Next">
-            <span aria-hidden="true">&raquo;</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
+    <!-- 페이지네이션 -->
+	<nav class="m-5" aria-label="Page navigation example">
+		  <ul class="pagination justify-content-center">
+			<c:if test="${totalCnt == null || totalCnt == 0 }">
+				<div>게시물이 없습니다.</div>
+			</c:if>
+			<c:if test="${totalCnt != null || totalCnt != 0 }">
+				<c:if test="${pr.showPrev }">
+					<li class="page-item"><a class="page-link" 
+					href="<c:url value="/club${pr.sc.getQueryString(pr.beginPage-1) }" />">&lt; </a></li>
+				</c:if>
+				<c:forEach var="i" begin="${pr.beginPage }" end="${pr.endPage }">
+					<li class="page-item"><a class="page-link" 
+					href="<c:url value="/club${pr.sc.getQueryString(i)}" />">${i }</a></li>
+				</c:forEach>
+				<c:if test="${pr.showNext }">
+					<li class="page-item"><a class="page-link" 
+					href="<c:url value="/club${pr.sc.getQueryString(pr.endPage+1) }" />">&gt; </a></li>
+				</c:if>
+			</c:if>
+		</div>
+		</ul>
+	</nav>
     
     <!-- 검색 영역 -->
 	    <div class="d-flex flex-row mx-auto w-75">

@@ -13,8 +13,8 @@ public class ClubServiceImpl implements ClubService {
 	ClubDao clubDao;
 
 	@Override
-	public List<ClubDto> getClubList() throws Exception {
-		return clubDao.clubListSelect();
+	public List<ClubDto> getClubList(SearchItem sc) throws Exception {
+		return clubDao.clubListSelect(sc);
 	}
 
 	@Override
@@ -33,8 +33,8 @@ public class ClubServiceImpl implements ClubService {
 	}
 
 	@Override
-	public List<ClubDto> clubSelect(Integer club_id) throws Exception {
-		return clubDao.clubSelect(club_id);
+	public List<ClubDto> clubSelect(Map<String, Object> map) throws Exception {
+		return clubDao.clubSelect(map);
 	}
 
 	@Override

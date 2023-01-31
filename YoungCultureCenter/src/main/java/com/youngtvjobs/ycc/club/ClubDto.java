@@ -18,7 +18,8 @@ public class ClubDto {
 	private Date club_create_time;
 	private String club_info;
 	private String club_master_id;
-	private int count;
+	private int count;	// 전체 동아리 개수
+	private int club_member_cnt;  // 동아리 회원수
 	
 	//club_board
 	private Integer club_article_id;
@@ -38,9 +39,9 @@ public class ClubDto {
 	}
 
 	public ClubDto(Integer club_id, String club_title, Date club_create_time, String club_info, String club_master_id,
-			int count, Integer club_article_id, String club_article_title, String club_article_content,
-			Date club_board_upload_time, Integer club_article_viewcnt, String user_id, Integer club_comment_id,
-			String club_comment, Date club_comment_time) {
+			int count, int club_member_cnt, Integer club_article_id, String club_article_title,
+			String club_article_content, Date club_board_upload_time, Integer club_article_viewcnt, String user_id,
+			Integer club_comment_id, String club_comment, Date club_comment_time) {
 		super();
 		this.club_id = club_id;
 		this.club_title = club_title;
@@ -48,6 +49,7 @@ public class ClubDto {
 		this.club_info = club_info;
 		this.club_master_id = club_master_id;
 		this.count = count;
+		this.club_member_cnt = club_member_cnt;
 		this.club_article_id = club_article_id;
 		this.club_article_title = club_article_title;
 		this.club_article_content = club_article_content;
@@ -57,7 +59,6 @@ public class ClubDto {
 		this.club_comment_id = club_comment_id;
 		this.club_comment = club_comment;
 		this.club_comment_time = club_comment_time;
-		
 	}
 
 	public Integer getClub_id() {
@@ -100,6 +101,22 @@ public class ClubDto {
 		this.club_master_id = club_master_id;
 	}
 
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+
+	public int getClub_member_cnt() {
+		return club_member_cnt;
+	}
+
+	public void setClub_member_cnt(int club_member_cnt) {
+		this.club_member_cnt = club_member_cnt;
+	}
+
 	public Integer getClub_article_id() {
 		return club_article_id;
 	}
@@ -114,6 +131,14 @@ public class ClubDto {
 
 	public void setClub_article_title(String club_article_title) {
 		this.club_article_title = club_article_title;
+	}
+
+	public String getClub_article_content() {
+		return club_article_content;
+	}
+
+	public void setClub_article_content(String club_article_content) {
+		this.club_article_content = club_article_content;
 	}
 
 	public Date getClub_board_upload_time() {
@@ -139,16 +164,7 @@ public class ClubDto {
 	public void setUser_id(String user_id) {
 		this.user_id = user_id;
 	}
-	
-	public int getCount() {
-		return count;
-	}
 
-	public void setCount(int count) {
-		this.count = count;
-	}
-
-	
 	public Integer getClub_comment_id() {
 		return club_comment_id;
 	}
@@ -172,21 +188,12 @@ public class ClubDto {
 	public void setClub_comment_time(Date club_comment_time) {
 		this.club_comment_time = club_comment_time;
 	}
-	
-	
-	public String getClub_article_content() {
-		return club_article_content;
-	}
-
-	public void setClub_article_content(String club_article_content) {
-		this.club_article_content = club_article_content;
-	}
 
 	@Override
 	public int hashCode() {
 		return Objects.hash(club_article_content, club_article_id, club_article_title, club_article_viewcnt,
 				club_board_upload_time, club_comment, club_comment_id, club_comment_time, club_create_time, club_id,
-				club_info, club_master_id, club_title, count, user_id);
+				club_info, club_master_id, club_member_cnt, club_title, count, user_id);
 	}
 
 	@Override
@@ -208,20 +215,21 @@ public class ClubDto {
 				&& Objects.equals(club_comment_time, other.club_comment_time)
 				&& Objects.equals(club_create_time, other.club_create_time) && Objects.equals(club_id, other.club_id)
 				&& Objects.equals(club_info, other.club_info) && Objects.equals(club_master_id, other.club_master_id)
-				&& Objects.equals(club_title, other.club_title)
-				&& count == other.count
-				&& Objects.equals(user_id, other.user_id);
+				&& club_member_cnt == other.club_member_cnt && Objects.equals(club_title, other.club_title)
+				&& count == other.count && Objects.equals(user_id, other.user_id);
 	}
 
 	@Override
 	public String toString() {
 		return "ClubDto [club_id=" + club_id + ", club_title=" + club_title + ", club_create_time=" + club_create_time
 				+ ", club_info=" + club_info + ", club_master_id=" + club_master_id + ", count=" + count
-				+ ", club_article_id=" + club_article_id + ", club_article_title=" + club_article_title
-				+ ", club_article_content=" + club_article_content + ", club_board_upload_time="
-				+ club_board_upload_time + ", club_article_viewcnt=" + club_article_viewcnt + ", user_id=" + user_id
-				+ ", club_comment_id=" + club_comment_id + ", club_comment=" + club_comment + ", club_comment_time="
-				+ club_comment_time + "]";
+				+ ", club_member_cnt=" + club_member_cnt + ", club_article_id=" + club_article_id
+				+ ", club_article_title=" + club_article_title + ", club_article_content=" + club_article_content
+				+ ", club_board_upload_time=" + club_board_upload_time + ", club_article_viewcnt="
+				+ club_article_viewcnt + ", user_id=" + user_id + ", club_comment_id=" + club_comment_id
+				+ ", club_comment=" + club_comment + ", club_comment_time=" + club_comment_time + "]";
 	}
+
+	
 
 }

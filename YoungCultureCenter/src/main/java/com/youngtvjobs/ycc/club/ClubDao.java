@@ -5,7 +5,7 @@ import java.util.Map;
 
 public interface ClubDao {
 
-	List<ClubDto> clubListSelect() throws Exception;
+	List<ClubDto> clubListSelect(SearchItem sc) throws Exception;
 
 	List<ClubDto> popularClub() throws Exception;
 
@@ -13,7 +13,7 @@ public interface ClubDao {
 
 	int clubInsert(Map<String, Object> map) throws Exception;
 
-	List<ClubDto> clubSelect(Integer club_id) throws Exception;
+	List<ClubDto> clubSelect(Map<String, Object> map) throws Exception;
 
 	int commentInsert(Map<String, Object> map) throws Exception;
 

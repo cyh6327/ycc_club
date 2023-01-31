@@ -15,8 +15,8 @@ public class ClubDaoImpl implements ClubDao{
 	private static String namespace = "com.youngtvjobs.ycc.club.clubMapper.";
 	
 	@Override
-	public List<ClubDto> clubListSelect() throws Exception {
-		return session.selectList(namespace+"clubListSelect");
+	public List<ClubDto> clubListSelect(SearchItem sc) throws Exception {
+		return session.selectList(namespace+"clubListSelect", sc);
 	}
 	
 	@Override
@@ -35,8 +35,8 @@ public class ClubDaoImpl implements ClubDao{
 	}
 
 	@Override
-	public List<ClubDto> clubSelect(Integer club_id) throws Exception {
-		return session.selectList(namespace+"clubSelect", club_id);
+	public List<ClubDto> clubSelect(Map<String, Object> map) throws Exception {
+		return session.selectList(namespace+"clubSelect", map);
 	}
 
 	@Override
