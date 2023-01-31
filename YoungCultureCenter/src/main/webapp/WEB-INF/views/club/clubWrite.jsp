@@ -48,6 +48,12 @@
        <script>
        $(document).ready(function(){
     	   
+    	   function removeHTML(text) {
+    		   text = text.replace(/<br\/>/ig, "\n");
+    		   text = text.replace(/<(\/)?([a-zA-Z]*)(\s[a-zA-Z]*=[^>]*)?(\s)*(\/)?>/ig, "");
+    		   return text
+    	   }
+    	   
     	   let content = '<c:out value="${postSelect[0].club_article_content}"/>';
     	   console.log(content)
     	   
@@ -76,11 +82,15 @@
            });
            
 			let formCheck = function() {
-				if($('.post_title').val() == "") {
+				
+				// html태그와 trim()으로 제거되지 않는 공백문자(=&nbsp;)를 제거
+				let res = $('.post_content').val().replace(/&nbsp;|<[^>]*>?/g, '');
+				
+				if($.trim($('.post_title').val()) == "") {
 					alert("제목을 입력해 주세요.")
 					return false
 				}	
-				if($('.post_content').val() == "") {
+				if($.trim(res) == "") {
 					alert("내용을 입력해 주세요.")
 					return false
 				}	

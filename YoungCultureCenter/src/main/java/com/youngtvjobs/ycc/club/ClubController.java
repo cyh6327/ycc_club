@@ -87,7 +87,7 @@ public class ClubController
 	}
 
 	@RequestMapping("/club/board")
-	public String clubBoard(HttpServletRequest request, Model m, Authentication auth, 
+	public String clubBoard(HttpServletRequest request, Model m, Authentication auth, SearchItem sc,
 			@RequestParam("club_id") String str) {
 		
 		Integer club_id = Integer.parseInt(str);
@@ -100,6 +100,11 @@ public class ClubController
 			
 			List<ClubDto> myClubList = clubService.getMyClub(user_id);
 		    m.addAttribute("myClubList", myClubList);
+		    
+		    int totalCnt = clubService.clubSelect(club_id).get(0).getCount();
+		    PageResolver pageResolver = new PageResolver(totalCnt, sc);
+			m.addAttribute("pr", pageResolver);
+		    
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -164,6 +169,9 @@ public class ClubController
 		String str = request.getParameter("club_article_id");
 		String str2 = request.getParameter("club_id");
 		Integer club_article_id = Integer.parseInt(str);
+		
+		// html태그 제거 => 모든 태그가 제거되서 줄바꿈도 적용안되므로 다시 수정해야됌
+		club_article_content = club_article_content.replaceAll("<(/)?([a-zA-Z]*)(\\\\s[a-zA-Z]*=[^>]*)?(\\\\s)*(/)?>", "");
 		
 		// redirect시 /club/board/view의 파라미터를 전달
 		re.addAttribute("club_article_id", str);
@@ -250,7 +258,9 @@ public class ClubController
 		String str = request.getParameter("club_id");
 		
 		Integer club_id = Integer.parseInt(str);
-		
+		//club_article_content = club_article_content.replaceAll("\r\n", "<br>");
+		club_article_content = club_article_content.replaceAll("<(/)?([a-zA-Z]*)(\\\\s[a-zA-Z]*=[^>]*)?(\\\\s)*(/)?>", "");
+		System.out.println("club_article_content2 = " + club_article_content);
 		Map<String, Object> map = new HashMap<String, Object>();
 	    map.put("club_article_title", club_article_title);
 	    map.put("club_article_content", club_article_content);
