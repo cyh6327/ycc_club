@@ -25,6 +25,7 @@
 	<select id="clubListSelect" resultType="ClubDto" parameterType="SearchItem">
 		<include refid="selectAllClub" />
 		where true <include refid="searchConditionClub" />
+		order by club_member_cnt desc
 		limit #{pageSize} offset #{offset}
 	</select>
 	
@@ -34,12 +35,6 @@
 		from club c 
 		where c.club_title = #{club_title}
 	 </select>
-	
-	<select id="popularClub" resultType="ClubDto">
-		<include refid="selectAllClub" />
-		order by count desc
-		limit 3
-	</select>
 	
 	<select id="myClubSelect" resultType="ClubDto" parameterType="String">
 		select * 

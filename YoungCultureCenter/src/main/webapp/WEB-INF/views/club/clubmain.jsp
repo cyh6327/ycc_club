@@ -41,7 +41,7 @@
 
 		<hr>
 		<div class="row">
-			<c:forEach var="clubDto" items="${pClubList }">
+			<c:forEach var="clubDto" items="${cList }" begin="0" end="2">
 			<!--인기동아리1 그리드-->
 			<div class="col-md-4">
 				<!-- 이미지 부분 -->
@@ -52,7 +52,7 @@
 						<div class="club-info px-2">
 							<h2 style="font-size: 2vw">${clubDto.club_title }</h2>
 							<p style="font-size: 0.8vw">
-								동아리장 : ${clubDto.club_master_id } | 멤버 : ${clubDto.count }명 |<br>생성일 : <fmt:formatDate pattern="yyyy-MM-dd" value="${clubDto.club_create_time }" />
+								동아리장 : ${clubDto.club_master_id } | 멤버 : ${clubDto.club_member_cnt }명 |<br>생성일 : <fmt:formatDate pattern="yyyy-MM-dd" value="${clubDto.club_create_time }" />
 							</p>
 						</div>
 					</div>

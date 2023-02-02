@@ -18,11 +18,6 @@ public class ClubServiceImpl implements ClubService {
 	}
 
 	@Override
-	public List<ClubDto> getPopularClub() throws Exception {
-		return clubDao.popularClub();
-	}
-
-	@Override
 	public List<ClubDto> getMyClub(String user_id) throws Exception {
 		return clubDao.myClubSelect(user_id);
 	}

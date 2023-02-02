@@ -42,10 +42,6 @@ public class ClubController
 			m.addAttribute("cList", cList);
 			System.out.println("cList = " + cList);
 			
-			List<ClubDto> pClubList = clubService.getPopularClub();
-			m.addAttribute("pClubList", pClubList);
-			System.out.println("pClubList = " + pClubList);
-			
 			String user_id = auth.getName(); 
 			m.addAttribute("user_id", user_id);
 		    System.out.println("user_id = " + user_id);

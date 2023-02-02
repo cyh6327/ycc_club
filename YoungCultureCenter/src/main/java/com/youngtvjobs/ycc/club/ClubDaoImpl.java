@@ -18,11 +18,6 @@ public class ClubDaoImpl implements ClubDao{
 	public List<ClubDto> clubListSelect(SearchItem sc) throws Exception {
 		return session.selectList(namespace+"clubListSelect", sc);
 	}
-	
-	@Override
-	public List<ClubDto> popularClub() throws Exception {
-		return session.selectList(namespace+"popularClub");
-	}
 
 	@Override
 	public List<ClubDto> myClubSelect(String user_id) throws Exception {
