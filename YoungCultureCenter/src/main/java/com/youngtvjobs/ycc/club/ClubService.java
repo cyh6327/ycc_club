@@ -29,4 +29,8 @@ public interface ClubService {
 
 	int clubTitleCheck(String club_title) throws Exception;
 
+	int joinClub(Map<String, Object> map) throws Exception;
+
+	int deleteMember(Map<String, Object> map) throws Exception;
+
 }

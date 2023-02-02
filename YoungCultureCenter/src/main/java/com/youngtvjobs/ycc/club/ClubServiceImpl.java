@@ -72,4 +72,14 @@ public class ClubServiceImpl implements ClubService {
 		return clubDao.clubTitleCheck(club_title);
 	}
 
+	@Override
+	public int joinClub(Map<String, Object> map) throws Exception {
+		return clubDao.insertMember(map);
+	}
+
+	@Override
+	public int deleteMember(Map<String, Object> map) throws Exception {
+		return clubDao.deleteMember(map);
+	}
+
 }

@@ -109,6 +109,12 @@
 		VALUES(#{club_article_title}, #{club_article_content}, now(), 0, #{club_id}, #{user_id})
 	</insert>
 	
+	<insert id="insertMember" parameterType="map">
+		INSERT INTO public.club_member
+		(club_in_time, user_id, club_id)
+		VALUES(now(), #{user_id}, #{club_id})
+	</insert>
+	
 	<update id="updatePost" parameterType="map">
 		UPDATE public.club_board
 		SET club_article_title=#{club_article_title}, club_article_content=#{club_article_content}
@@ -118,6 +124,11 @@
 	<delete id="deletePost" parameterType="Integer">
 		DELETE FROM public.club_board
 		WHERE club_article_id=#{club_article_id}
+	</delete>
+	
+	<delete id="deleteMember" parameterType="map">
+		DELETE FROM public.club_member
+		WHERE user_id=#{user_id} AND club_id=#{club_id}
 	</delete>
  
 	

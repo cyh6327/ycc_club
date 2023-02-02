@@ -29,8 +29,14 @@
         <option value="3">관련순</option>
       </select>
     </div>
+    
+    <!--글쓰기 버튼-->
+	<%-- <a id="writeBtn" class="btn btn-primary float-end" href="<c:url value='/club/board/write?club_id=${param.club_id }' />" role="button">글쓰기</a> --%>
+	<!-- <button type="button" id="writeBtn" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#exampleModal">가입하기</button> -->
+	<button type="button" id="writeBtn" class="btn btn-primary float-end">가입하기</button>
+	
     <!--게시판 부분-->
-    <%-- <c:if test="${clubSelect[0].club_article_id != null }"> --%>
+    <c:if test="${clubSelect[0].club_article_id != null }">
     <table class="table table-hover">
       <thead>
         <tr>
@@ -51,9 +57,26 @@
 	  </c:forEach>
       </tbody>
     </table>
+    </c:if>
     
-    <!--글쓰기 버튼-->
-	<a id="writeBtn" class="btn btn-primary float-end" href="<c:url value='/club/board/write?club_id=${param.club_id }' />" role="button">글쓰기</a>
+ 	<!-- Modal -->
+<!-- 	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog modal-dialog-centered">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h1 class="modal-title fs-5" id="exampleModalLabel">동아리 가입하기</h1>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      <div class="modal-body">
+	        ...
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+	        <button type="button" class="btn btn-primary">가입하기</button>
+	      </div>
+	    </div>
+	  </div>
+	</div> -->
 	
     <!-- 페이지네이션 -->
 	<nav class="m-5" aria-label="Page navigation example">
@@ -78,7 +101,7 @@
 		</div>
 		</ul>
 	</nav>
-    
+	
     <div class="bottomsearch" style="display: flex; margin-left: 30%; margin-top: 50px;">
       <select class="form-select form-select-sm" aria-label=".form-select-sm example"
         style="width: 90px; margin-right: 10px;">
@@ -90,33 +113,103 @@
     </div>
   </div>
   
-  <script>
-  $(document).ready(function(){
+  <button type="button" id="quitBtn" class="btn btn-sm btn-outline-secondary float-end mx-5">탈퇴하기</button>
+  
+<script>
+/* 	let msg = "${msg}"
+	if(msg == "JOIN_OK") 
+		alert("가입이 완료되었습니다!")
+	if(msg == "DEL_OK")
+		alert("탈퇴가 완료되었습니다.") */
+			
+$(document).ready(function(){
 	  
-	  let list = new Array();
- 	  const url = new URL(window.location.href)
- 	  console.log(url)
-  	  const urlParams = url.searchParams;
-	  var club_id = urlParams.get("club_id")
+	let list = new Array();
+	const url = new URL(window.location.href)
+	const urlParams = url.searchParams;
+	let club_id = urlParams.get("club_id")
 	  
-	  <c:forEach items="${myClubList}" var="clubDto">
-		console.log("${clubDto.club_id}");	// 위에 list나 변수를 선언하고 alert 자리에 담으면 차례대로 값을 받는다.
+	// 로그인한 유저가 가입한 동아리 목록(=myClubList)을 가져와서 list에 담음
+	<c:forEach items="${myClubList}" var="clubDto">
 		list.push("${clubDto.club_id}");
-	  </c:forEach>
+	</c:forEach>
 	 
- 	  if(!list.includes(club_id)) {
- 		 $('#writeBtn').hide()
- 	  }
+	// 유저가 가입한 동아리 목록에 현재 동아리가 포함되어 있으면 '가입하기'버튼을 '글쓰기'버튼으로 변경
+	if(list.includes(club_id)) {
+		$('#writeBtn').text("글쓰기")
+	}
+ 	  
+	// 유저가 가입한 동아리 목록에 현재 동아리가 포함되어 있지 않으면 '탈퇴하기'버튼 안 보이게 설정
+	if(!list.includes(club_id)) {
+		$('#quitBtn').hide()
+	}
 		  
-  })
-  
-  
-  
-  
-  
-  
-  
-  </script>
+	$('#writeBtn').on("click", function() {
+		var csrfHeaderName = "${_csrf.headerName}";
+		var csrfTokenValue = "${_csrf.token}";
+		
+		if($(this).text() == "가입하기") {
+			if (confirm("동아리에 가입하시겠습니까?")) {
+				$.ajax({
+		  			beforeSend : function(xhr) {
+						xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
+					},
+					type : 'post',
+					url : '/ycc/club/join',
+					data : {
+						club_id : ${param.club_id}
+					},
+					dataType : 'text',
+					success : function(data) { 	
+						alert("가입이 완료되었습니다!")
+						location.reload();
+					},
+					error : function() {
+						alert("error")
+					}
+ 		    	})
+			}
+		} else {
+ 			// 게시글 작성 페이지로 이동
+			location.href = "<c:url value='/club/board/write?club_id=${param.club_id }' />"
+		}
+ 	})
+ 	  
+	$('#quitBtn').on("click", function() {
+		var csrfHeaderName = "${_csrf.headerName}";
+		var csrfTokenValue = "${_csrf.token}";
+		if (confirm("동아리에서 탈퇴하시겠습니까?")) {
+	 		$.ajax({
+	  			beforeSend : function(xhr) {
+					xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
+				},
+				type : 'post',
+				url : '/ycc/club/member/delete',
+				data : {
+					club_id : ${param.club_id}
+				},
+				dataType : 'text',
+				success : function(data) {
+					alert("탈퇴가 완료되었습니다.")
+					location.href = "<c:url value='/club' />"
+				},
+				error : function() {
+					alert("error")
+				}
+			})
+		}
+	})
+ 	  
+/*  	  	$("#exampleModal").on('show.bs.modal', function(e){
+ 	  		if($('#writeBtn').text() == "글쓰기") {
+				e.preventDefault();
+				location.href = "<c:url value='/club/board/write?club_id=${param.club_id }' />"
+			}
+		}) */
+ 	  
+})
+
+</script>
 	  
 	<!-- footer include -->
 	<%@include file="/WEB-INF/views/footer.jsp"%>

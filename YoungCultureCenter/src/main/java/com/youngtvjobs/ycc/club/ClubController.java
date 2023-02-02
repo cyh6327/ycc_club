@@ -74,6 +74,13 @@ public class ClubController
 		return "club/clubCreateForm";
 	}
 	
+	/*
+	@GetMapping("/club/joinForm")
+	public String clubJoinForm() {
+		return "club/clubJoinForm";
+	}
+	*/
+	
 	@PostMapping("/club/dbCheckClubTitle")
 	@ResponseBody
 	public int clubTitleCheck(SearchItem sc, Model m, String club_title,
@@ -118,6 +125,29 @@ public class ClubController
 		}
 
 		return "redirect:/club";
+	}
+	
+	@PostMapping("/club/join")
+	public ResponseEntity<String> joinClub(HttpServletRequest request, Authentication auth, 
+			RedirectAttributes rattr, @RequestParam("club_id") String str) {
+		
+		String user_id = auth.getName();
+		Integer club_id = Integer.parseInt(str);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+	    map.put("club_id", club_id);
+	    map.put("user_id", user_id);
+		
+	    try {
+	    	int joinClub = clubService.joinClub(map);
+			if (joinClub != 1) {
+				throw new Exception("Join Member Failed");
+			}
+			return new ResponseEntity<String>("JOIN_OK", HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>("WRT_ERR", HttpStatus.BAD_REQUEST);
+		}
 	}
 
 	@RequestMapping("/club/board")
@@ -257,6 +287,29 @@ public class ClubController
 		}
 		
 		return "club/club_board";
+	}
+	
+	@PostMapping("club/member/delete")
+	public ResponseEntity<String> deleteMember(HttpServletRequest request, Model m, Authentication auth,
+			@RequestParam("club_id") String str) {
+		
+		Integer club_id = Integer.parseInt(str);
+		String user_id = auth.getName(); 
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+	    map.put("club_id", club_id);
+	    map.put("user_id", user_id);
+		
+		try {
+			int deleteMember = clubService.deleteMember(map);
+			if (deleteMember != 1) {
+				throw new Exception("Delete Failed");
+			}
+			return new ResponseEntity<String>("DEL_OK", HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>("DEL_ERR", HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	@PostMapping("club/board/comment")

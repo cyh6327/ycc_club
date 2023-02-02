@@ -73,4 +73,14 @@ public class ClubDaoImpl implements ClubDao{
 	public int clubTitleCheck(String club_title) throws Exception {
 		return session.selectOne(namespace+"clubTitleCheck", club_title);
 	}
+
+	@Override
+	public int insertMember(Map<String, Object> map) throws Exception {
+		return session.insert(namespace+"insertMember", map);
+	}
+
+	@Override
+	public int deleteMember(Map<String, Object> map) throws Exception {
+		return session.delete(namespace+"deleteMember", map);
+	}
 }

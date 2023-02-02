@@ -28,4 +28,8 @@ public interface ClubDao {
 	List<ClubDto> selectClubComment(Integer club_article_id) throws Exception;
 
 	int clubTitleCheck(String club_title) throws Exception;
+
+	int insertMember(Map<String, Object> map) throws Exception;
+
+	int deleteMember(Map<String, Object> map) throws Exception;
 }
