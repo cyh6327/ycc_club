@@ -6,15 +6,25 @@
 <mapper namespace="com.youngtvjobs.ycc.club.clubMapper" >
 
 	<sql id="selectAllClub">
-<!-- 		select *, (select count(*) from club_member cm where club_id = c.club_id)
-		from club c -->
-		select *, (select count(*) as club_member_cnt from club_member cm where club_id = c.club_id), 
-		(select count(*) from club c)
+		select *, (select count(*) as club_member_cnt from club_member cm where club_id = c.club_id),
+		<choose>
+			<when test='keyword!=null'>
+				(select count(*) as count from club c where true <include refid="searchConditionClub" />)
+			</when>
+			<otherwise>
+				(select count(*) from club c)
+			</otherwise>
+		</choose>
 		from club c
+	</sql>
+	
+	<sql id="searchConditionClub">
+		AND club_title LIKE concat('%',#{keyword},'%')
 	</sql>
 
 	<select id="clubListSelect" resultType="ClubDto" parameterType="SearchItem">
 		<include refid="selectAllClub" />
+		where true <include refid="searchConditionClub" />
 		limit #{pageSize} offset #{offset}
 	</select>
 	

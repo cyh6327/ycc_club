@@ -31,7 +31,10 @@ public class ClubController
 
 	@GetMapping("/club")
 	public String clubMain(HttpServletRequest request, Model m, SearchItem sc, Authentication auth,
-			@RequestParam(required=false, value="club_title") String club_title) {
+			@RequestParam(required=false, value="keyword") String keyword) {
+		
+		System.out.println("keyword" + keyword);
+		int totalCnt;
 		
 		try {
 			
@@ -51,12 +54,13 @@ public class ClubController
 		    m.addAttribute("myClubList", myClubList);
 		    System.out.println("myClubList = " + myClubList);
 		    
-		    int totalCnt = clubService.getClubList(sc).get(0).getCount();
+		    totalCnt = clubService.getClubList(sc).get(0).getCount();
 		    System.out.println("totalCnt = " + totalCnt);
 			m.addAttribute("totalCnt", totalCnt);
 			
 			PageResolver pageResolver = new PageResolver(totalCnt, sc);
 			m.addAttribute("pr", pageResolver);
+			
 			
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -35,43 +35,9 @@
 	<div class="container text-center">
 		<div class="d-flex justify-content-between mt-5">
 			<h1 class="text-start" >인기 동아리</h1>
-			<!-- <button class="btn btn-primary btn-sm h-25 mt-4" data-bs-toggle="modal" data-bs-target="#exampleModal">동아리 생성</button> -->
 			<button id="moveCreateFormBtn" class="btn btn-primary btn-sm h-25 mt-4" 
 			onclick="location.href='<c:url value='/club/createForm'/>'">동아리 생성</button>
 		</div>
-		
-		<!-- 동아리 생성 모달 -->
-		<!-- Modal -->
-<%-- 		<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-		    <div class="modal-content">
-		      <div class="modal-header">
-		        <h1 class="modal-title fs-5" id="exampleModalLabel">동아리 생성</h1>
-		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-		      </div>
-		      <form id="form" class="frm" action="" method="POST" >
-		      <c:set var="user_id" value="${user_id}"></c:set>
-		      <input type="hidden" name="user_id" value="${user_id}" />
-		      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-		      <div class="modal-body">
-		        	<div class="text-start mb-2">
-			        	<label for="name">동아리명</label>
-						<input type="text" name="club_title" required minlength="2" maxlength="12" size="20">
-						<button type="button" id="dbCheckBtn" name="dbCheck" class="btn btn-sm btn-primary">중복확인</button>
-					</div>
-					<div class="text-start">
-			        	<p style="margin-bottom: 5px;">소개글</p>
-						<textarea class="w-100 h-75" name="club_info" rows="5" cols="3"></textarea>
-					</div>
-		      </div>
-		      <div class="modal-footer">
-		        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-		        <button type="button" id="createBtn" class="btn btn-primary">생성하기</button>
-		      </div>
-		      </form>
-		    </div>
-		  </div>
-		</div> --%>
 
 		<hr>
 		<div class="row">
@@ -175,14 +141,18 @@
 	</nav>
     
     <!-- 검색 영역 -->
-	    <div class="d-flex flex-row mx-auto w-75">
-	      <select class="form-select form-select-sm mx-2 w-25" aria-label=".form-select-sm example">
-	        <option value="1">제목</option>
-	        <option value="2">작성자</option>
-	      </select>
-	      <input type="text" class="form-control mx-2 w-50" aria-label="title" aria-describedby="basic-addon1">
-	      <button type="button" class="btn btn-primary mx-2" style="width: 80px">검색</button>
-	    </div>
+    <div class="center">
+		<form action="<c:url value="/club" />" method="get">
+		<div class="d-flex justify-content-center"> 
+		      <select class="form-select form-select-sm mx-2" style="width: 120px" aria-label=".form-select-sm example">
+		        <option value="1">동아리명</option>
+		        <!-- <option value="2">동아리장</option> -->
+		      </select>
+		      <input type="text" class="form-control mx-2 w-50" name="keyword" placeholder="검색어를 입력해주세요."
+		      value="${param.keyword }" aria-label="title" aria-describedby="basic-addon1">
+		      <button type="submit" class="btn btn-primary mx-2" style="width: 80px">검색</button>
+      	</div>
+      	</form>
     </div>
    
   
@@ -190,7 +160,7 @@
 	
 <script>
   $(document).ready(function(){
-	  
+		  
 		/* let msg = "${msg}"
 		if(msg == "OVERLAP") alert("중복된 동아리명입니다.") */
 			
@@ -202,6 +172,13 @@
 			
 			form.submit()
 	  	} */
+	  	
+/*  	  	$('.page-link').on("click", function() {
+	  		alert("clicked")
+	  		let number = $(this).text()
+	  		$(this).addClass("active")
+	  	}) */
+	  	
 	  	
 	  	$('#dbCheckBtn').on("click", function() {
 	  		alert("dbCheckBtn")
