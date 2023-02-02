@@ -48,12 +48,6 @@
        <script>
        $(document).ready(function(){
     	   
-    	   function removeHTML(text) {
-    		   text = text.replace(/<br\/>/ig, "\n");
-    		   text = text.replace(/<(\/)?([a-zA-Z]*)(\s[a-zA-Z]*=[^>]*)?(\s)*(\/)?>/ig, "");
-    		   return text
-    	   }
-    	   
     	   let content = '<c:out value="${postSelect[0].club_article_content}"/>';
     	   console.log(content)
     	   
@@ -82,7 +76,6 @@
            });
            
 			let formCheck = function() {
-				
 				// html태그와 trim()으로 제거되지 않는 공백문자(=&nbsp;)를 제거
 				let res = $('.post_content').val().replace(/&nbsp;|<[^>]*>?/g, '');
 				

@@ -68,7 +68,7 @@
 	  							<hr>
 	  							<div>
 	  								<!-- 댓글 -->
-	  								<h5 class="fw-bold">${commentList[0] == null ? "" : "댓글"}</h5> 
+	  								<h5 class="fw-bold">${commentSelect[0] == null ? "" : "댓글"}</h5> 
 	  								<ul id="commentList" style="list-style:none;">
 	  								<c:forEach var="clubDto" items="${commentSelect }" varStatus="status">
 	  									<li data-cno="${status.count}" class="py-2">
@@ -147,6 +147,16 @@ var csrfTokenValue= "${_csrf.token}"
 
 	$(document).ready(function(){
 		
+		let formCheck = function() {
+			// html태그와 trim()으로 제거되지 않는 공백문자(=&nbsp;)를 제거
+			let res = $('#comment').val().replace(/&nbsp;|<[^>]*>?/g, '');	
+			if($.trim(res) == "") {
+				alert("댓글 내용을 입력해 주세요.")
+				return false
+			}	
+			return true;
+		}
+		
 		let list = new Array();
 		const url = new URL(window.location.href)
 		console.log(url)
@@ -184,9 +194,7 @@ var csrfTokenValue= "${_csrf.token}"
 			console.log("user_id=",user_id)
 			let club_article_id = ${param.club_article_id}
 			
-			if(club_comment == "") {
-				alert("댓글을 작성해주세요")
-			} else {
+			if(formCheck()) {
 				$.ajax({
 					beforeSend: function(xhr) {
 						console.log("beforeSend")
@@ -208,6 +216,7 @@ var csrfTokenValue= "${_csrf.token}"
 					}
 				})
 			}
+				
 		})
 		
 		

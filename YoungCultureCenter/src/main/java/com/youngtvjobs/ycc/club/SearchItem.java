@@ -65,8 +65,7 @@ public class SearchItem {
 
 	public void setPageSize(Integer pageSize) {
 		this.pageSize = requireNonNullElse(pageSize, DEFAULT_PAGE_SIZE);	//pageSize가 null이면 DEFAULT_PAGE_SIZE 리턴
-		
-		// MIN_PAGE_SIZE <= pageSize <= MAX_PAGE_SIZE
+		//MIN_PAGE_SIZE <= pageSize <= MAX_PAGE_SIZE
 		this.pageSize = max(MIN_PAGE_SIZE, min(this.pageSize, MAX_PAGE_SIZE));	//max: 두 값 중 더 큰 값을 반환
 	}
 

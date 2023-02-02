@@ -18,6 +18,13 @@
 		limit #{pageSize} offset #{offset}
 	</select>
 	
+	 <!-- 같은 동아리명이 있으면 count 1 , 없으면 0 체크해서 중복확인  -->
+	 <select id="clubTitleCheck" parameterType="String" resultType="Integer">
+		select count(club_title)
+		from club c 
+		where c.club_title = #{club_title}
+	 </select>
+	
 	<select id="popularClub" resultType="ClubDto">
 		<include refid="selectAllClub" />
 		order by count desc

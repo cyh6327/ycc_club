@@ -68,4 +68,9 @@ public class ClubDaoImpl implements ClubDao{
 	public List<ClubDto> selectClubComment(Integer club_article_id) throws Exception {
 		return session.selectList(namespace+"selectClubComment", club_article_id);
 	}
+
+	@Override
+	public int clubTitleCheck(String club_title) throws Exception {
+		return session.selectOne(namespace+"clubTitleCheck", club_title);
+	}
 }

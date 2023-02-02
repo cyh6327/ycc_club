@@ -27,4 +27,6 @@ public interface ClubService {
 
 	List<ClubDto> selectClubComment(Integer club_article_id) throws Exception;
 
+	int clubTitleCheck(String club_title) throws Exception;
+
 }

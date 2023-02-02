@@ -35,12 +35,14 @@
 	<div class="container text-center">
 		<div class="d-flex justify-content-between mt-5">
 			<h1 class="text-start" >인기 동아리</h1>
-			<button class="btn btn-primary btn-sm h-25 mt-4" data-bs-toggle="modal" data-bs-target="#exampleModal">동아리 생성</button>
+			<!-- <button class="btn btn-primary btn-sm h-25 mt-4" data-bs-toggle="modal" data-bs-target="#exampleModal">동아리 생성</button> -->
+			<button id="moveCreateFormBtn" class="btn btn-primary btn-sm h-25 mt-4" 
+			onclick="location.href='<c:url value='/club/createForm'/>'">동아리 생성</button>
 		</div>
 		
 		<!-- 동아리 생성 모달 -->
 		<!-- Modal -->
-		<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<%-- 		<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
 		    <div class="modal-content">
 		      <div class="modal-header">
@@ -55,6 +57,7 @@
 		        	<div class="text-start mb-2">
 			        	<label for="name">동아리명</label>
 						<input type="text" name="club_title" required minlength="2" maxlength="12" size="20">
+						<button type="button" id="dbCheckBtn" name="dbCheck" class="btn btn-sm btn-primary">중복확인</button>
 					</div>
 					<div class="text-start">
 			        	<p style="margin-bottom: 5px;">소개글</p>
@@ -68,7 +71,7 @@
 		      </form>
 		    </div>
 		  </div>
-		</div>
+		</div> --%>
 
 		<hr>
 		<div class="row">
@@ -188,12 +191,69 @@
 <script>
   $(document).ready(function(){
 	  
+		/* let msg = "${msg}"
+		if(msg == "OVERLAP") alert("중복된 동아리명입니다.") */
+			
+/* 	  	let dbCheckClubTitle = function() {
+			let form = $('#form')
+			
+			form.attr("action", "<c:url value='/club.dbCheckClubTitle'/>")
+			form.attr("method", "get")
+			
+			form.submit()
+	  	} */
+	  	
+	  	$('#dbCheckBtn').on("click", function() {
+	  		alert("dbCheckBtn")
+	  		var csrfHeaderName = "${_csrf.headerName}";
+			var csrfTokenValue = "${_csrf.token}";
+			let club_title = $('input[name=club_title]').val()
+			console.log(club_title)
+	  		$.ajax({
+	  			beforeSend : function(xhr) {
+					xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
+				},
+				type : 'post',
+				url : '/ycc/club/dbCheckClubTitle',
+				data : {
+					club_title : club_title
+				},
+				dataType : 'json',
+				success : function(result) {
+					alert(result)
+					if (result == 0) {
+						alert("사용 가능한 동아리명입니다.")
+					} else {
+						alert("중복된 동아리명입니다.")
+					}
+				},
+				error : function() {
+					alert("error")
+				}
+	  		})
+	  	})
+	  
 		let formCheck = function() {
-			if($('input[name=club_title]').val() == "") {
-				alert("동아리 이름을 입력해 주세요.")
+			// html태그와 trim()으로 제거되지 않는 공백문자(=&nbsp;)를 제거
+			let res = $('textarea[name=club_info]').val().replace(/&nbsp;|<[^>]*>?/g, '');
+			let club_title_list = new Array();
+			
+			<c:forEach items="${cList}" var="clubDto">
+				console.log("${clubDto.club_title}");	
+				club_title_list.push("${clubDto.club_title}");
+		    </c:forEach>
+			
+			if($.trim($('input[name=club_title]').val()) == "") {
+				alert("동아리명을 입력해 주세요.")
 				return false
-			}	
-			if($('textarea[name=club_info]').val() == "") {
+			}
+			
+			if($('input[name=club_title]').val().match(/^\s/)) {
+				alert("동아리명은 공백으로 시작할 수 없습니다.")
+				return false
+			}
+			
+			if($.trim(res) == "") {
 				alert("동아리 소개글을 작성해 주세요.")
 				return false
 			}	
@@ -210,12 +270,8 @@
 				form.submit()
 				alert("동아리가 생성되었습니다!")
 			}
-				
 		})
-		
 		/* if(!formCheck()) */
-		
-			
 	  
 /* 	  <c:forEach items="${myClubList}" var="clubDto">
 		console.log("${clubDto.club_article_title}");	// 위에 list나 변수를 선언하고 alert 자리에 담으면 차례대로 값을 받는다.

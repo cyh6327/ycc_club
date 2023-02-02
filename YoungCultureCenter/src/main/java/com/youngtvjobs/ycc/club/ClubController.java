@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -29,9 +30,11 @@ public class ClubController
 	ClubDto clubDto;
 
 	@GetMapping("/club")
-	public String clubMain(HttpServletRequest request, Model m, SearchItem sc, Authentication auth) {
+	public String clubMain(HttpServletRequest request, Model m, SearchItem sc, Authentication auth,
+			@RequestParam(required=false, value="club_title") String club_title) {
 		
 		try {
+			
 			List<ClubDto> cList = clubService.getClubList(sc);
 			m.addAttribute("cList", cList);
 			System.out.println("cList = " + cList);
@@ -55,12 +58,32 @@ public class ClubController
 			PageResolver pageResolver = new PageResolver(totalCnt, sc);
 			m.addAttribute("pr", pageResolver);
 			
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		return "club/clubmain";
+	}
+	
+	@GetMapping("/club/createForm")
+	public String clubCreateForm() {
+		return "club/clubCreateForm";
+	}
+	
+	@PostMapping("/club/dbCheckClubTitle")
+	@ResponseBody
+	public int clubTitleCheck(SearchItem sc, Model m, String club_title,
+			RedirectAttributes rattr) {
+		
+		int result = 0;
+		
+		try {
+			result = clubService.clubTitleCheck(club_title);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 	
 	@PostMapping("/club/create")
@@ -183,7 +206,7 @@ public class ClubController
 		String str = request.getParameter("club_article_id");
 		String str2 = request.getParameter("club_id");
 		Integer club_article_id = Integer.parseInt(str);
-		
+		System.out.println("club_article_id" + club_article_id);
 		// html태그 제거 => 모든 태그가 제거되서 줄바꿈도 적용안되므로 다시 수정해야됌
 		club_article_content = club_article_content.replaceAll("<(/)?([a-zA-Z]*)(\\\\s[a-zA-Z]*=[^>]*)?(\\\\s)*(/)?>", "");
 		

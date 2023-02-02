@@ -67,4 +67,9 @@ public class ClubServiceImpl implements ClubService {
 		return clubDao.selectClubComment(club_article_id);
 	}
 
+	@Override
+	public int clubTitleCheck(String club_title) throws Exception {
+		return clubDao.clubTitleCheck(club_title);
+	}
+
 }

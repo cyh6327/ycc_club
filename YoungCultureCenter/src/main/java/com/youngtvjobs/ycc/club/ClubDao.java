@@ -26,4 +26,6 @@ public interface ClubDao {
 	int deletePost(Integer club_article_id) throws Exception;
 
 	List<ClubDto> selectClubComment(Integer club_article_id) throws Exception;
+
+	int clubTitleCheck(String club_title) throws Exception;
 }
