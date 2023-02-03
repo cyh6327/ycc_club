@@ -1,29 +1,46 @@
 package com.youngtvjobs.ycc.club;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.youngtvjobs.ycc.course.CourseController;
+
+import net.coobird.thumbnailator.Thumbnails;
+
 @Controller
-public class ClubController
-{
+public class ClubController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
 	
 	@Autowired
 	ClubService clubService;
@@ -41,6 +58,10 @@ public class ClubController
 			List<ClubDto> cList = clubService.getClubList(sc);
 			m.addAttribute("cList", cList);
 			System.out.println("cList = " + cList);
+			
+			List<ClubDto> pClubList = clubService.getPopularClub();
+			m.addAttribute("pClubList", pClubList);
+			System.out.println("pClubList = " + pClubList);
 			
 			String user_id = auth.getName(); 
 			m.addAttribute("user_id", user_id);
@@ -375,6 +396,125 @@ public class ClubController
 		}
 	    
 	    return "club/club_board";
+	}
+	
+	/* 첨부 파일 업로드 */
+	@PostMapping(value = "club/uploadAjaxAction", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ClubImgDto> uploadAjaxActionPOST(MultipartFile uploadFile) {
+		
+		logger.info("uploadAjaxActionPOST..........");
+		
+		// view에서 전달받은 파일(uploadFile)
+		File checkfile = new File(uploadFile.getOriginalFilename());
+		String type = null;  //MIME TYPE을 저장할 변수
+		try {
+			// probeContentType() : 파라미터로 전달받은 파일의 MIME TYPE을 문자열(Stirng) 반환해주는 메서드
+			type = Files.probeContentType(checkfile.toPath());
+			logger.info("MIME TYPE : " + type);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		if(!type.startsWith("image")) {
+			// 전달 해줄 파일의 정보는 없지만 반환 타입이 ResponseEntity<ClubImgDto>이기 때문에 변수 선언
+			ClubImgDto clubImgDto = null;
+			return new ResponseEntity<>(clubImgDto, HttpStatus.BAD_REQUEST);	//상태 코드 400
+		}
+		
+		String uploadFolder = "C:\\upload";
+		
+		//날짜 데이터를 지정된 문자열 형식으로 변환하거나 날짜 문자열 데이터를 날짜 데이터로 변환할 수 있게 해주는 클래스
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");	
+		Date date = new Date();	//오늘의 날짜 데이터
+		String str = sdf.format(date);
+		
+		/* '-'을 경로 구분자인 '/'(리눅스) 혹은 '\'(윈도우)로 변경하기 위해 replace 메서드 사용
+		File.separator: 실행되는 환경(리눅스, 윈도우, ...)에 따라 그에 맞는 경로 구분자를 반환해줌 */
+		String datePath = str.replace("-", File.separator);
+		
+		/* 폴더 생성 => "c://upload//yyyy//MM//dd" 경로의 디렉터리를 대상으로 하는 File 객체로 초기화
+		new File(부모 경로, 자식 경로) */
+		File uploadPath = new File(uploadFolder, datePath);
+		
+		// 폴더가 이미 존재하는 상황에서 폴더를 생성하는 코드가 실행되는 것을 방지
+		if(uploadPath.exists() == false) {
+			uploadPath.mkdirs();	//여러개의 폴더를 생성하는 메서드
+		}
+		
+		/* 이미지 정보 객체 */
+		ClubImgDto clubImgDto = new ClubImgDto();
+		
+		/* 파일 이름. 뷰로부터 전달받은 파일 이름을 가져옴 */
+		String uploadFileName = uploadFile.getOriginalFilename();
+		clubImgDto.setFileName(uploadFileName);
+		clubImgDto.setUploadPath(datePath);
+		
+		/* uuid(범용 고유 식별자) 적용 파일 이름 
+		 * UUID 타입의 데이터를 toString을 통해 String으로 변환 */
+		String uuid = UUID.randomUUID().toString();
+		clubImgDto.setUuid(uuid);
+		
+		// 기존 파일 이름인 uploadFileName 변수를 "UUID_파일 이름" 형식이 되도록 재할당
+		uploadFileName = uuid + "_" + uploadFileName;
+		
+		/* 파일 위치, 파일 이름을 합친 File 객체 */
+		File saveFile = new File(uploadPath, uploadFileName);
+		
+		
+		try {
+			/* 파일 저장. transferTo() 사용 */
+			uploadFile.transferTo(saveFile);
+			
+			/* thumbnailaotor 라이브러리를 사용해 썸네일 생성 및 저장 */
+			File thumbnailFile = new File(uploadPath, "s_" + uploadFileName);	
+			
+			BufferedImage bo_image = ImageIO.read(saveFile);
+
+				//비율 
+				double ratio = 5;
+				//넓이 높이
+				int width = (int) (bo_image.getWidth() / ratio);
+				int height = (int) (bo_image.getHeight() / ratio);					
+			
+			Thumbnails.of(saveFile)
+	        .size(width, height)
+	        .toFile(thumbnailFile);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		
+		logger.info("파일 이름 : " + uploadFile.getOriginalFilename());
+		logger.info("파일 타입 : " + uploadFile.getContentType());
+		logger.info("파일 크기 : " + uploadFile.getSize());
+		
+		ResponseEntity<ClubImgDto> result = new ResponseEntity<ClubImgDto>(clubImgDto, HttpStatus.OK);
+		
+		return result;
+		
+	}
+	
+	@GetMapping("club/display")
+	public ResponseEntity<byte[]> getImage(String fileName){
+		
+		logger.info("getImage()......." + fileName);
+
+		File file = new File("c:\\upload\\" + fileName);
+		
+		ResponseEntity<byte[]> result = null;
+		
+		try {
+			// ResponseEntity에 Response의 header와 관련된 설정의 객체를 추가해주기 위해 객체 생성
+			HttpHeaders header = new HttpHeaders();
+			// header의 'Content Type' 속성 값에 이미지 파일 MIME TYPE을 추가
+			header.add("Content-type", Files.probeContentType(file.toPath()));
+			// copyToByteArray(file): 파라미터로 부여하는 File 객체(=대상 파일)을 복사하여 Byte 배열로 반환함
+			result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 	
 }

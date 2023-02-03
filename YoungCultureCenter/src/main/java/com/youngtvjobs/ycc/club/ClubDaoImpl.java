@@ -78,4 +78,9 @@ public class ClubDaoImpl implements ClubDao{
 	public int deleteMember(Map<String, Object> map) throws Exception {
 		return session.delete(namespace+"deleteMember", map);
 	}
+
+	@Override
+	public List<ClubDto> popularClub() throws Exception {
+		return session.selectList(namespace+"popularClub");
+	}
 }

@@ -77,4 +77,9 @@ public class ClubServiceImpl implements ClubService {
 		return clubDao.deleteMember(map);
 	}
 
+	@Override
+	public List<ClubDto> getPopularClub() throws Exception {
+		return clubDao.popularClub();
+	}
+
 }

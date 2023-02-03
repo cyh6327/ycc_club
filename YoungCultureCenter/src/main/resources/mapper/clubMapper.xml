@@ -25,8 +25,13 @@
 	<select id="clubListSelect" resultType="ClubDto" parameterType="SearchItem">
 		<include refid="selectAllClub" />
 		where true <include refid="searchConditionClub" />
-		order by club_member_cnt desc
 		limit #{pageSize} offset #{offset}
+	</select>
+	
+	<select id="popularClub" resultType="ClubDto">
+		<include refid="selectAllClub" />
+		order by club_member_cnt desc
+		limit 3
 	</select>
 	
 	 <!-- 같은 동아리명이 있으면 count 1 , 없으면 0 체크해서 중복확인  -->
@@ -41,8 +46,8 @@
 		from club c
 		join club_member cm
 		on c.club_id = cm.club_id
-		left join club_board cb 
-		on cm.club_id = cb.club_id 
+<!-- 		left join club_board cb 
+		on cm.club_id = cb.club_id  -->
 		where cm.user_id = #{user_id}
 	</select>
 	

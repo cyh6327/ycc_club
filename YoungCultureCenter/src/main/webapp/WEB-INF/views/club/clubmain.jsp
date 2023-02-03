@@ -23,6 +23,14 @@
 	bottom: 0%;
 	width: 100%;
 }
+
+.txt { 		/* 동아리 소개글 길 경우에 ...로 생략해줌 */
+ overflow: hidden;  		
+  text-overflow: ellipsis;  	
+  white-space: nowrap; 		
+  width: 300px;
+  height: 20px;
+}
 </style>
 
 <title>YOUNG문화센터 - 동아리 메인</title>
@@ -41,7 +49,7 @@
 
 		<hr>
 		<div class="row">
-			<c:forEach var="clubDto" items="${cList }" begin="0" end="2">
+			<c:forEach var="clubDto" items="${pClubList }" begin="0" end="2">
 			<!--인기동아리1 그리드-->
 			<div class="col-md-4">
 				<!-- 이미지 부분 -->
@@ -78,11 +86,12 @@
 							class="img-thumbnail rounded-2 me-3" alt="영문화센터"
 							style="height: 150px; width: 150px;">
 						<!-- 동아리 이동(제목클릭) -->
-						<div class="text-truncate">
+						<div class="text-truncate block">
 							<a href="<c:url value='/club/board?club_id=${clubDto.club_id }'/>" method="GET" style="text-decoration: none; text-decoration-color: none;">
-							<h4>${clubDto.club_title }</h4>
+							<h5 class="mt-2 fw-bold">${clubDto.club_title }</h5>
 							<small class="text-muted">동아리장 : ${clubDto.club_master_id } | 멤버수 : ${clubDto.club_member_cnt }명 | 생성일 : <fmt:formatDate pattern="yyyy-MM-dd" value="${clubDto.club_create_time }" /></small></a>
 							<a href="#" class="text-reset text-decoration-none"><p class="mb-2">${clubDto.club_article_title }</p></a>
+							<div class="txt text-start">${clubDto.club_info }</div>
 						</div>
 					</div>
 					<hr>
@@ -104,10 +113,11 @@
 			    			<img src="/ycc/resources/img/club/ycc_logo.png"
 								class="img-thumbnail rounded-2 me-3" alt="영문화센터"
 								style="height: 150px; width: 150px;">
-							<div class="list_info">
-								<div class="text-start mt-2"><a href="<c:url value='/club/board?club_id=${clubDto.club_id }' />">${clubDto.club_title }</a></div>
-								<div class="text-start">${clubDto.club_info }</div>
-								<div class="text-muted text-start mt-2">동아리장 : ${clubDto.club_master_id } | 멤버 : ${clubDto.club_member_cnt }명</div>
+							<div class="list_info block">
+								<a class="text-start" href="<c:url value='/club/board?club_id=${clubDto.club_id }' />" style="text-decoration: none; text-decoration-color: none;">
+									<h5 class="mt-2 fw-bold">${clubDto.club_title }</h5></a>
+								<p class="text-start text-muted">동아리장 : ${clubDto.club_master_id } | 멤버 : ${clubDto.club_member_cnt }명</p>	
+								<div class="txt text-start">${clubDto.club_info }</div>
 							</div>
 						</div>
 		    		</li>

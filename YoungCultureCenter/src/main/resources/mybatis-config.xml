@@ -5,6 +5,7 @@
 
 
 <configuration>
+   
 	<typeAliases>
 		<typeAlias alias="AuthDto" type="com.youngtvjobs.ycc.member.AuthDto"/>
 		<typeAlias alias="MemberDto" type="com.youngtvjobs.ycc.member.MemberDto" />
@@ -22,6 +23,7 @@
 		<typeAlias alias="BoardDto" type="com.youngtvjobs.ycc.board.BoardDto" />
 		
 		<typeAlias alias="ClubDto" type="com.youngtvjobs.ycc.club.ClubDto" />
+		<typeAlias alias="ClubImgDto" type="com.youngtvjobs.ycc.club.ClubImgDto" />
 		
 		<typeAlias alias="PlaceDto" type="com.youngtvjobs.ycc.rental.PlaceDto" />
 		<typeAlias alias="LockerDto" type="com.youngtvjobs.ycc.rental.LockerDto" />

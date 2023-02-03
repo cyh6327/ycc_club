@@ -30,4 +30,6 @@ public interface ClubDao {
 	int insertMember(Map<String, Object> map) throws Exception;
 
 	int deleteMember(Map<String, Object> map) throws Exception;
+
+	List<ClubDto> popularClub() throws Exception;
 }
