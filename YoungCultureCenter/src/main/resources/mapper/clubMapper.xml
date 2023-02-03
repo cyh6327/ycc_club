@@ -37,12 +37,12 @@
 	 </select>
 	
 	<select id="myClubSelect" resultType="ClubDto" parameterType="String">
-		select * 
+		select *, (select count(*) as club_member_cnt from club_member cm where club_id = c.club_id)
 		from club c
-		join club_member cm 
+		join club_member cm
 		on c.club_id = cm.club_id
 		left join club_board cb 
-		on cm.club_id = cb.club_id  
+		on cm.club_id = cb.club_id 
 		where cm.user_id = #{user_id}
 	</select>
 	

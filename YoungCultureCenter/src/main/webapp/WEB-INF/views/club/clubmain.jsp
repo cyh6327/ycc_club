@@ -81,7 +81,7 @@
 						<div class="text-truncate">
 							<a href="<c:url value='/club/board?club_id=${clubDto.club_id }'/>" method="GET" style="text-decoration: none; text-decoration-color: none;">
 							<h4>${clubDto.club_title }</h4>
-							<small class="text-muted">동아리장 : ${clubDto.club_master_id } | 멤버수 : ${clubDto.count }명 | 생성일 : <fmt:formatDate pattern="yyyy-MM-dd" value="${clubDto.club_create_time }" /></small></a>
+							<small class="text-muted">동아리장 : ${clubDto.club_master_id } | 멤버수 : ${clubDto.club_member_cnt }명 | 생성일 : <fmt:formatDate pattern="yyyy-MM-dd" value="${clubDto.club_create_time }" /></small></a>
 							<a href="#" class="text-reset text-decoration-none"><p class="mb-2">${clubDto.club_article_title }</p></a>
 						</div>
 					</div>
