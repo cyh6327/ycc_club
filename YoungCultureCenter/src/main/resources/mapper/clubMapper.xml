@@ -90,8 +90,11 @@
 	
 	<insert id="clubInsert" parameterType="map">
 		INSERT INTO public.club
-		(club_title, club_create_time, club_info, club_master_id)
-		VALUES(#{club_title}, now(), #{club_info}, #{club_master_id})
+		(club_title, club_create_time, club_info, club_master_id, uuid, upload_path, file_name)
+		VALUES(#{club_title}, now(), #{club_info}, #{club_master_id}, #{uuid}, #{upload_path}, #{file_name})
+<!-- 		<selectKey resultType="int" keyProperty="club_id" order="AFTER">
+  			SELECT MAX(club_id) FROM club
+  		</selectKey> -->
 	</insert>
 	
 	<insert id="commentInsert" parameterType="map">
@@ -114,6 +117,13 @@
 		(club_in_time, user_id, club_id)
 		VALUES(now(), #{user_id}, #{club_id})
 	</insert>
+	
+ 	<!-- 이미지 등록 -->
+	<!--<insert id="imageEnroll">
+		INSERT INTO public.club_img
+		(uuid, filename, uploadpath, club_id)
+		VALUES(#{uuid}, #{filename}, #{uploadpath}, #{club_id})
+	</insert> -->
 	
 	<update id="updatePost" parameterType="map">
 		UPDATE public.club_board

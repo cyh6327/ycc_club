@@ -3,9 +3,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<% pageContext.setAttribute("replaceStr", "\\"); %>
 
-<%-- <sec:authentication property="principal" var="pinfo"/>
-<c:set var="loginId" value="${pinfo.member.user_id }" /> --%>
 
 <!DOCTYPE html>
 <html>
@@ -31,6 +31,17 @@
   width: 300px;
   height: 20px;
 }
+
+#result_card img{
+	max-width: 100%;
+    height: auto;
+    display: block;
+    padding: 5px;
+    margin-top: 10px;
+    margin: auto;	
+}
+
+
 </style>
 
 <title>YOUNG문화센터 - 동아리 메인</title>
@@ -53,8 +64,18 @@
 			<!--인기동아리1 그리드-->
 			<div class="col-md-4">
 				<!-- 이미지 부분 -->
-				<div style="position: relative;">
-					<img class="img-fluid" src="/ycc/resources/img/club/catclub.jpg">
+				<!-- <div style="position: relative;"> -->
+				<div id="result_card" class="mx-3" style="position: relative; height: 300px; width: 300px;" >
+				<c:set var="upload_path" value="${fn:replace(clubDto.upload_path, replaceStr, '&#47;')}" />
+				<c:set var="fileCallPath" value="${upload_path }/s_${clubDto.uuid }_${clubDto.file_name }"  />
+					<c:choose>
+						<c:when test="${clubDto.uuid != null }">
+							<img class="w-100 h-100 p-0" src='<%=request.getContextPath()%>/club/display?file_name=${fileCallPath}'>
+						</c:when>
+						<c:otherwise>
+							<img class="w-100 h-100 p-0" src='<%=request.getContextPath()%>/resources/img/club/no_image.png'>
+						</c:otherwise>
+					</c:choose>
 					<!-- 겹쳐지는 텍스트 부분 -->
 					<div class="club-info">
 						<div class="club-info px-2">
@@ -82,9 +103,18 @@
 				<c:forEach var="clubDto" items="${myClubList }">
 					<div class="text-start px-4">
 						<div class="d-flex me-auto">
-							<img src="/ycc/resources/img/club/ycc_logo.png"
-							class="img-thumbnail rounded-2 me-3" alt="영문화센터"
-							style="height: 150px; width: 150px;">
+							<div id="result_card" class="mx-3 mb-3" style="height: 150px; width: 150px;">
+							<c:set var="upload_path" value="${fn:replace(clubDto.upload_path, replaceStr, '&#47;')}" />
+							<c:set var="fileCallPath" value="${upload_path }/s_${clubDto.uuid }_${clubDto.file_name }"  />
+								<c:choose>
+									<c:when test="${clubDto.uuid != null }">
+										<img class="w-100 h-100 p-0" src='<%=request.getContextPath()%>/club/display?file_name=${fileCallPath}'>
+									</c:when>
+									<c:otherwise>
+										<img class="w-100 h-100 p-0" src='<%=request.getContextPath()%>/resources/img/club/no_image.png'>
+									</c:otherwise>
+								</c:choose>
+							</div>
 						<!-- 동아리 이동(제목클릭) -->
 						<div class="text-truncate block">
 							<a href="<c:url value='/club/board?club_id=${clubDto.club_id }'/>" method="GET" style="text-decoration: none; text-decoration-color: none;">
@@ -93,6 +123,7 @@
 							<a href="#" class="text-reset text-decoration-none"><p class="mb-2">${clubDto.club_article_title }</p></a>
 							<div class="txt text-start">${clubDto.club_info }</div>
 						</div>
+						
 					</div>
 					<hr>
 					</div>
@@ -110,9 +141,18 @@
 	    		<c:forEach var="clubDto" items="${cList }">
 		    		<li class="col-6">
 		    			<div class="list_thumb d-flex">
-			    			<img src="/ycc/resources/img/club/ycc_logo.png"
-								class="img-thumbnail rounded-2 me-3" alt="영문화센터"
-								style="height: 150px; width: 150px;">
+							<div id="result_card" class="mx-3 mb-3" style="height: 150px; width: 150px;">
+							<c:set var="upload_path" value="${fn:replace(clubDto.upload_path, replaceStr, '&#47;')}" />
+							<c:set var="fileCallPath" value="${upload_path }/s_${clubDto.uuid }_${clubDto.file_name }"  />
+								<c:choose>
+									<c:when test="${clubDto.uuid != null }">
+										<img class="w-100 h-100 p-0" src='<%=request.getContextPath()%>/club/display?file_name=${fileCallPath}'>
+									</c:when>
+									<c:otherwise>
+										<img class="w-100 h-100 p-0" src='<%=request.getContextPath()%>/resources/img/club/no_image.png'>
+									</c:otherwise>
+								</c:choose>
+							</div>
 							<div class="list_info block">
 								<a class="text-start" href="<c:url value='/club/board?club_id=${clubDto.club_id }' />" style="text-decoration: none; text-decoration-color: none;">
 									<h5 class="mt-2 fw-bold">${clubDto.club_title }</h5></a>
@@ -170,7 +210,10 @@
 	
 <script>
   $(document).ready(function(){
-		  
+	  
+	  
+	let listThumb = $('.list_thumb')
+
 		/* let msg = "${msg}"
 		if(msg == "OVERLAP") alert("중복된 동아리명입니다.") */
 			

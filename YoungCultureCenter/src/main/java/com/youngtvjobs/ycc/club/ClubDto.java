@@ -33,6 +33,15 @@ public class ClubDto {
 	private Integer club_comment_id;
 	private String club_comment;
 	private Date club_comment_time;
+	
+	//club_img
+	//private ClubImgDto clubImgDto;
+	/* 경로 */
+	private String upload_path;
+	/* uuid */
+	private String uuid;
+	/* 파일 이름 */
+	private String file_name;
 
 	public ClubDto() {
 		// TODO Auto-generated constructor stub
@@ -41,7 +50,8 @@ public class ClubDto {
 	public ClubDto(Integer club_id, String club_title, Date club_create_time, String club_info, String club_master_id,
 			int count, int club_member_cnt, Integer club_article_id, String club_article_title,
 			String club_article_content, Date club_board_upload_time, Integer club_article_viewcnt, String user_id,
-			Integer club_comment_id, String club_comment, Date club_comment_time) {
+			Integer club_comment_id, String club_comment, Date club_comment_time, String upload_path, String uuid,
+			String file_name) {
 		super();
 		this.club_id = club_id;
 		this.club_title = club_title;
@@ -59,6 +69,9 @@ public class ClubDto {
 		this.club_comment_id = club_comment_id;
 		this.club_comment = club_comment;
 		this.club_comment_time = club_comment_time;
+		this.upload_path = upload_path;
+		this.uuid = uuid;
+		this.file_name = file_name;
 	}
 
 	public Integer getClub_id() {
@@ -189,11 +202,35 @@ public class ClubDto {
 		this.club_comment_time = club_comment_time;
 	}
 
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public String getUpload_path() {
+		return upload_path;
+	}
+
+	public void setUpload_path(String upload_path) {
+		this.upload_path = upload_path;
+	}
+
+	public String getFile_name() {
+		return file_name;
+	}
+
+	public void setFile_name(String file_name) {
+		this.file_name = file_name;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(club_article_content, club_article_id, club_article_title, club_article_viewcnt,
 				club_board_upload_time, club_comment, club_comment_id, club_comment_time, club_create_time, club_id,
-				club_info, club_master_id, club_member_cnt, club_title, count, user_id);
+				club_info, club_master_id, club_member_cnt, club_title, count, file_name, upload_path, user_id, uuid);
 	}
 
 	@Override
@@ -216,7 +253,9 @@ public class ClubDto {
 				&& Objects.equals(club_create_time, other.club_create_time) && Objects.equals(club_id, other.club_id)
 				&& Objects.equals(club_info, other.club_info) && Objects.equals(club_master_id, other.club_master_id)
 				&& club_member_cnt == other.club_member_cnt && Objects.equals(club_title, other.club_title)
-				&& count == other.count && Objects.equals(user_id, other.user_id);
+				&& count == other.count && Objects.equals(file_name, other.file_name)
+				&& Objects.equals(upload_path, other.upload_path) && Objects.equals(user_id, other.user_id)
+				&& Objects.equals(uuid, other.uuid);
 	}
 
 	@Override
@@ -227,9 +266,8 @@ public class ClubDto {
 				+ ", club_article_title=" + club_article_title + ", club_article_content=" + club_article_content
 				+ ", club_board_upload_time=" + club_board_upload_time + ", club_article_viewcnt="
 				+ club_article_viewcnt + ", user_id=" + user_id + ", club_comment_id=" + club_comment_id
-				+ ", club_comment=" + club_comment + ", club_comment_time=" + club_comment_time + "]";
+				+ ", club_comment=" + club_comment + ", club_comment_time=" + club_comment_time + ", upload_path="
+				+ upload_path + ", uuid=" + uuid + ", file_name=" + file_name + "]";
 	}
-
-	
 
 }

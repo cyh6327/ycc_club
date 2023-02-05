@@ -32,5 +32,5 @@ public interface ClubService {
 	int deleteMember(Map<String, Object> map) throws Exception;
 
 	List<ClubDto> getPopularClub() throws Exception;
-
+	
 }

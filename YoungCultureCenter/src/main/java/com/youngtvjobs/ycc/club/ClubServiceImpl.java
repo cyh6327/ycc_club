@@ -4,9 +4,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import lombok.extern.log4j.Log4j;
+
 @Service
+@Log4j
 public class ClubServiceImpl implements ClubService {
 	
 	@Autowired
@@ -24,6 +29,9 @@ public class ClubServiceImpl implements ClubService {
 
 	@Override
 	public int createClub(Map map) throws Exception {
+		
+		log.info("(service)createClub.......");
+    	
 		return clubDao.clubInsert(map);
 	}
 

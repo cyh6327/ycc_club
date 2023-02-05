@@ -86,11 +86,6 @@
 									<input type="file" id ="fileItem" name='uploadFile' style="height: 30px;">
 									<!-- 이미지 미리보기 -->
 									<div id="uploadResult">
- 										<div id="result_card">
- 											<!-- 이미지 출력 테스트 -->
-											<%-- <div class="imgDeleteBtn">x</div>
-											<img src="<%=request.getContextPath()%>/club/display?fileName=test.png"> --%>
-										</div>
 									</div>
                     			</div>
                     		</div>  
@@ -127,6 +122,12 @@
 		
 		var csrfHeaderName = "${_csrf.headerName}";
 		var csrfTokenValue = "${_csrf.token}";
+		
+		/* 이미지 존재시 삭제 => 이미지 업로드 후 다시 이미지 업로드할 때, 기존 이미지가 삭제되어야 하므로
+		이미지 미리 보기 태그의 존재 유무로 이미지가 업로드 됐는지 확인 */
+		if($(".imgDeleteBtn").length > 0){
+			deleteFile();
+		}
 		
 		/* <form> 태그와 같은 역할을 해주는 객체 FormData 생성
 		화면의 이동 없이 첨부파일을 서버로 전송하기 위해 form태그 대신 사용 */
@@ -202,17 +203,64 @@
 		console.log("obj = ", obj)
 		/* @GetMapping("club/display")에 전달해줄 파일의 경로와 이름을 포함하는 값을 저장하기 위한 변수
 		replace(/\\/g, '/') = 모든 '\'을 '/'로 변경 */
-		let fileCallPath = obj.uploadPath.replace(/\\/g, '/') + "/s_" + obj.uuid + "_" + obj.fileName;
+		console.log("obj.upload_path",obj.upload_path)
+		
+		let fileCallPath = obj.upload_path.replace(/\\/g, '/') + "/s_" + obj.uuid + "_" + obj.file_name;
+		console.log("fileCallPath",fileCallPath)
 		
 		let str = "";
 		str += "<div id='result_card'>";
-		str += "<img src='<%=request.getContextPath()%>/club/display?fileName=" + fileCallPath +"'>";
-		str += "<div class='imgDeleteBtn'>x</div>";
+		str += "<img src='<%=request.getContextPath()%>/club/display?file_name=" + fileCallPath +"'>";
+		str += "<div class='imgDeleteBtn' data-file='" + fileCallPath + "'>x</div>"
+		str += "<input type='hidden' name='file_name' value='"+ obj.file_name +"'>";
+		str += "<input type='hidden' name='uuid' value='"+ obj.uuid +"'>";
+		str += "<input type='hidden' name='upload_path' value='"+ obj.upload_path +"'>";	
 		str += "</div>";
 		
 		<!-- append() == html() -->
 		uploadResult.append(str);   
 	}
+	
+	/* 파일 삭제 메서드 */
+	function deleteFile(){
+		
+		var csrfHeaderName = "${_csrf.headerName}";
+		var csrfTokenValue = "${_csrf.token}";
+		
+		// .data() : 'data-속성' 값을 가져옴
+		let targetFile = $(".imgDeleteBtn").data("file");
+		let targetDiv = $("#result_card");
+		
+		$.ajax({
+ 			beforeSend : function(xhr) {
+				xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
+			},
+			url: '/ycc/club/deleteImage',
+			// 컨트롤러에서 파라미터명을 fileName으로 설정해둠
+			data : {fileName : targetFile},
+			dataType : 'text',
+			type : 'POST',
+			success : function(result){
+				console.log(result);		
+				targetDiv.remove();					//이미지 출력해주는 부분 삭제
+				$("input[type='file']").val("");	//태그 초기화
+			},
+			error : function(result){
+				console.log(result);
+				alert("파일을 삭제하는 데 실패했습니다.")
+			}
+       });
+	}
+	
+	/* 이미지 삭제 버튼 동작 
+	<div class="imgDeleteBtn"> 태그는 웹페이지가 로드된 후 자바스크립트 코드를 통해 동적으로 출력된 태그이기 때문에
+	.click 이 아니라 .on으로 설정해줘야 작동함 
+	기존 렌더링 될 때 추가되어 있는 <div id="uploadReulst"> 태그를 식별자로 하여 
+	그 내부에 있는 <div class="imgDeleteBtn"> 태그를 클릭(click) 하였을 때 동작한다는 의미 */
+	$("#uploadResult").on("click", ".imgDeleteBtn", function(e){
+		alert("이미지삭제버튼")
+		deleteFile();
+	});
 	
 	let formCheck = function() {
 		// html태그와 trim()으로 제거되지 않는 공백문자(=&nbsp;)를 제거

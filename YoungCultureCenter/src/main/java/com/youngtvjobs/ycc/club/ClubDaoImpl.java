@@ -83,4 +83,5 @@ public class ClubDaoImpl implements ClubDao{
 	public List<ClubDto> popularClub() throws Exception {
 		return session.selectList(namespace+"popularClub");
 	}
+
 }

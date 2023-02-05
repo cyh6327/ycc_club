@@ -3,6 +3,7 @@ package com.youngtvjobs.ycc.club;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -44,7 +45,7 @@ public class ClubController {
 	
 	@Autowired
 	ClubService clubService;
-	ClubDto clubDto;
+	ClubDao clubDao;
 
 	@GetMapping("/club")
 	public String clubMain(HttpServletRequest request, Model m, SearchItem sc, Authentication auth,
@@ -115,7 +116,9 @@ public class ClubController {
 	}
 	
 	@PostMapping("/club/create")
-	public String createClub(HttpServletRequest request, Authentication auth) {
+	public ResponseEntity<String> createClub(HttpServletRequest request, Authentication auth, ClubDto clubDto) {
+		
+		logger.info("createClub....." + clubDto);
 		
 		String club_title = request.getParameter("club_title");
 		System.out.println("club_title = " + club_title);
@@ -126,22 +129,30 @@ public class ClubController {
 		String club_master_id = auth.getName(); 
 	    System.out.println("club_master_id = " + club_master_id);
 	    
+	    String uuid = clubDto.getUuid();
+	    String upload_path = clubDto.getUpload_path();
+	    String file_name = clubDto.getFile_name();
+	    
 	    Map<String, Object> map = new HashMap<String, Object>();
 	    map.put("club_title", club_title);
 	    map.put("club_info", club_info);
 	    map.put("club_master_id", club_master_id);
+	    map.put("uuid", uuid);
+	    map.put("upload_path", upload_path);
+	    map.put("file_name", file_name);
+		
 	    
 	    try {
 	    	int clubCreate = clubService.createClub(map);
 			if (clubCreate != 1) {
 				throw new Exception("Create Failed");
 			}
-			return "redirect:/club";
+			return new ResponseEntity<String>("", HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		return "redirect:/club";
+		return new ResponseEntity<String>("", HttpStatus.OK);
 	}
 	
 	@PostMapping("/club/join")
@@ -400,7 +411,7 @@ public class ClubController {
 	
 	/* 첨부 파일 업로드 */
 	@PostMapping(value = "club/uploadAjaxAction", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ClubImgDto> uploadAjaxActionPOST(MultipartFile uploadFile) {
+	public ResponseEntity<ClubDto> uploadAjaxActionPOST(MultipartFile uploadFile) {
 		
 		logger.info("uploadAjaxActionPOST..........");
 		
@@ -417,8 +428,8 @@ public class ClubController {
 		
 		if(!type.startsWith("image")) {
 			// 전달 해줄 파일의 정보는 없지만 반환 타입이 ResponseEntity<ClubImgDto>이기 때문에 변수 선언
-			ClubImgDto clubImgDto = null;
-			return new ResponseEntity<>(clubImgDto, HttpStatus.BAD_REQUEST);	//상태 코드 400
+			ClubDto clubDto = null;
+			return new ResponseEntity<>(clubDto, HttpStatus.BAD_REQUEST);	//상태 코드 400
 		}
 		
 		String uploadFolder = "C:\\upload";
@@ -442,17 +453,17 @@ public class ClubController {
 		}
 		
 		/* 이미지 정보 객체 */
-		ClubImgDto clubImgDto = new ClubImgDto();
+		ClubDto clubDto = new ClubDto();
 		
 		/* 파일 이름. 뷰로부터 전달받은 파일 이름을 가져옴 */
 		String uploadFileName = uploadFile.getOriginalFilename();
-		clubImgDto.setFileName(uploadFileName);
-		clubImgDto.setUploadPath(datePath);
+		clubDto.setFile_name(uploadFileName);
+		clubDto.setUpload_path(datePath);
 		
 		/* uuid(범용 고유 식별자) 적용 파일 이름 
 		 * UUID 타입의 데이터를 toString을 통해 String으로 변환 */
 		String uuid = UUID.randomUUID().toString();
-		clubImgDto.setUuid(uuid);
+		clubDto.setUuid(uuid);
 		
 		// 기존 파일 이름인 uploadFileName 변수를 "UUID_파일 이름" 형식이 되도록 재할당
 		uploadFileName = uuid + "_" + uploadFileName;
@@ -488,18 +499,46 @@ public class ClubController {
 		logger.info("파일 타입 : " + uploadFile.getContentType());
 		logger.info("파일 크기 : " + uploadFile.getSize());
 		
-		ResponseEntity<ClubImgDto> result = new ResponseEntity<ClubImgDto>(clubImgDto, HttpStatus.OK);
+		ResponseEntity<ClubDto> result = new ResponseEntity<ClubDto>(clubDto, HttpStatus.OK);
 		
 		return result;
 		
 	}
 	
-	@GetMapping("club/display")
-	public ResponseEntity<byte[]> getImage(String fileName){
+	@PostMapping("/club/deleteImage")
+	public ResponseEntity<String> deleteImage(String fileName) {
 		
-		logger.info("getImage()......." + fileName);
+		logger.info("deleteImage()........" + fileName);
+		
+		File file = null;
+		
+		try {
+			/* 썸네일 파일 삭제 */
+			// view에서 받은 UTF-8타입의 이미지파일(fileName)을 디코딩
+			file = new File("c:\\upload\\" + URLDecoder.decode(fileName, "UTF-8"));
+			file.delete();
+			
+			/* 원본 파일 삭제 */
+			String originFileName = file.getAbsolutePath().replace("s_", "");
+			logger.info("originFileName : " + originFileName);
+			
+			file = new File(originFileName);
+			file.delete();
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>("fail", HttpStatus.NOT_IMPLEMENTED);
+		}
+		
+		return new ResponseEntity<String>("success", HttpStatus.OK);
+	}
+	
+	@GetMapping("club/display")
+	public ResponseEntity<byte[]> getImage(String file_name){
+		
+		logger.info("getImage()......." + file_name);
 
-		File file = new File("c:\\upload\\" + fileName);
+		File file = new File("c:\\upload\\" + file_name);
 		
 		ResponseEntity<byte[]> result = null;
 		
