@@ -30,22 +30,22 @@
     						<!-- 게시글 정보 -->
     						<form id="form" action="" method="post">
     							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">	
-	    						<input type="hidden" name="club_article_title" value="${postSelect[0].club_article_title }" />
+	    						<input type="hidden" name="club_article_title" value="${postSelect.club_article_title }" />
 	    						<input type="hidden" name="club_article_id" value="${param.club_article_id }" />
-	    						<input type="hidden" name="club_id" value="${postSelect[0].club_id }" />
+	    						<input type="hidden" name="club_id" value="${postSelect.club_id }" />
 	    						<!-- <input type="hidden" name="_method" value="delete"/> -->
 	    						<c:set var="postSelect" value="${postSelect}"></c:set>
-	  							<h3 class="title fw-bold">${postSelect[0].club_article_title }</h3>
+	  							<h3 class="title fw-bold">${postSelect.club_article_title }</h3>
 	  							<div class="d-flex">
-		  							<span class="writingInfo flex-grow-1">작성자 : ${postSelect[0].user_id} |
-		   								게시일 : <fmt:formatDate value="${postSelect[0].club_board_upload_time }" pattern="yyyy-MM-dd" type="date"/> 
-		  								| 조회수 : ${postSelect[0].club_article_viewcnt }
+		  							<span class="writingInfo flex-grow-1">작성자 : ${postSelect.user_id} |
+		   								게시일 : <fmt:formatDate value="${postSelect.club_board_upload_time }" pattern="yyyy-MM-dd" type="date"/> 
+		  								| 조회수 : ${postSelect.club_article_viewcnt }
 		  							</span>
 		  							<!-- 본인이 쓴 게시글에만 수정, 삭제 가능 -->
 									<!-- 세션 아이디와 boardDto에 저장된 아이디가 같으면 수정, 삭제 버튼 활성화 -->
 									<sec:authentication property="principal" var="pinfo"/>
 									<sec:authorize access="isAuthenticated()">
-										<c:if test="${pinfo.member.user_id eq postSelect[0].user_id}">
+										<c:if test="${pinfo.member.user_id eq postSelect.user_id}">
 										<span>
 							  				<button type="button" class="btn btn-sm btn-primary" id="modifyBtn">
 							  				<i class="bi bi-pen"></i>수정</button>
@@ -57,7 +57,7 @@
 	 							</div>
 	 							<hr>
 	 							<!-- 내용 -->
-	  							<p class="content my-5" >${postSelect[0].club_article_content }</p>
+	  							<p class="content my-5" >${postSelect.club_article_content }</p>
 	  							<!-- 테스트 -->
 <%-- 	  							<c:forEach var="result" items="${postSelect}" varStatus="status">
 	  								<c:set var="text" value="${fn:split(result,',')}" />

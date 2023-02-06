@@ -51,7 +51,10 @@ public class ClubServiceImpl implements ClubService {
 	}
 
 	@Override
-	public List<ClubDto> postSelect(Integer club_article_id) throws Exception {
+	public ClubDto postSelect(Integer club_article_id) throws Exception {
+		
+		clubDao.increaseClubViewCnt(club_article_id);
+		
 		return clubDao.postSelect(club_article_id);
 	}
 

@@ -34,7 +34,7 @@
     <div class="container border border-secondary rounded p-5" >
      <br>
 	<input name="post_title" type="text" class="form-control mb-2 post_title" placeholder="제목을 입력해주세요" 
-	value="<c:out value="${postSelect[0].club_article_title}"/>"/>
+	value="<c:out value="${postSelect.club_article_title}"/>"/>
 	<!--text area :썸머노트 스마트 에디터로 교체-->
        <textarea id="content" class="summernote post_content" name="post_content" style="margin-bottom: 30px;"></textarea>
        
@@ -48,7 +48,7 @@
        <script>
        $(document).ready(function(){
     	   
-    	   let content = '<c:out value="${postSelect[0].club_article_content}"/>';
+    	   let content = '<c:out value="${postSelect.club_article_content}"/>';
     	   console.log(content)
     	   
     	   let url = window.location.href

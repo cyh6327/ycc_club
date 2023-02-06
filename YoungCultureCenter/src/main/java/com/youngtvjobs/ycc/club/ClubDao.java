@@ -17,7 +17,7 @@ public interface ClubDao {
 
 	int postInsert(Map<String, Object> map) throws Exception;
 
-	List<ClubDto> postSelect(Integer club_article_id) throws Exception;
+	ClubDto postSelect(Integer club_article_id) throws Exception;
 
 	int updatePost(Map<String, Object> map) throws Exception;
 
@@ -32,4 +32,6 @@ public interface ClubDao {
 	int deleteMember(Map<String, Object> map) throws Exception;
 
 	List<ClubDto> popularClub() throws Exception;
+	
+	int increaseClubViewCnt(Integer club_article_id) throws Exception;
 }

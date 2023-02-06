@@ -79,7 +79,7 @@
 					<!-- 겹쳐지는 텍스트 부분 -->
 					<div class="club-info">
 						<div class="club-info px-2">
-							<h2 style="font-size: 2vw">${clubDto.club_title }</h2>
+							<a href="<c:url value='/club/board?club_id=${clubDto.club_id }'/>" style="text-decoration: none; text-decoration-color: none; font-size: 2vw; color: white;">${clubDto.club_title }</a>
 							<p style="font-size: 0.8vw">
 								동아리장 : ${clubDto.club_master_id } | 멤버 : ${clubDto.club_member_cnt }명 |<br>생성일 : <fmt:formatDate pattern="yyyy-MM-dd" value="${clubDto.club_create_time }" />
 							</p>

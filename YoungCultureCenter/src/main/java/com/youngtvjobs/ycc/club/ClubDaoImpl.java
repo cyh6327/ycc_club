@@ -45,8 +45,8 @@ public class ClubDaoImpl implements ClubDao{
 	}
 
 	@Override
-	public List<ClubDto> postSelect(Integer club_article_id) throws Exception {
-		return session.selectList(namespace+"postSelect", club_article_id);
+	public ClubDto postSelect(Integer club_article_id) throws Exception {
+		return session.selectOne(namespace+"postSelect", club_article_id);
 	}
 
 	@Override
@@ -82,6 +82,11 @@ public class ClubDaoImpl implements ClubDao{
 	@Override
 	public List<ClubDto> popularClub() throws Exception {
 		return session.selectList(namespace+"popularClub");
+	}
+
+	@Override
+	public int increaseClubViewCnt(Integer club_article_id) throws Exception {
+		return session.update(namespace+"increaseClubViewCnt", club_article_id);
 	}
 
 }

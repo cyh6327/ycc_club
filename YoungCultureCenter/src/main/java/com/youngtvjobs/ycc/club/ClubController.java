@@ -52,10 +52,7 @@ public class ClubController {
 			@RequestParam(required=false, value="keyword") String keyword,
 			@RequestParam(required=false, value="array") String array) {
 		
-		System.out.println("keyword" + keyword);
-		System.out.println("array" + array);
 		sc.setArray(array);
-		System.out.println(sc.getArray());
 		int totalCnt;
 		
 		try {
@@ -226,7 +223,7 @@ public class ClubController {
 		m.addAttribute("user_id", user_id);
 		
 		try {
-			List<ClubDto> postSelect = clubService.postSelect(club_article_id);
+			ClubDto postSelect = clubService.postSelect(club_article_id);
 			m.addAttribute("postSelect", postSelect);
 			System.out.println("postSelect=" + postSelect);
 		
@@ -250,7 +247,7 @@ public class ClubController {
 		Integer club_article_id = Integer.parseInt(str);
 		
 		try {
-			List<ClubDto> postSelect = clubService.postSelect(club_article_id);
+			ClubDto postSelect = clubService.postSelect(club_article_id);
 			m.addAttribute("postSelect", postSelect);
 			
 			String user_id = auth.getName(); 

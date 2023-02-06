@@ -17,7 +17,7 @@ public interface ClubService {
 
 	int postRegist(Map<String, Object> map) throws Exception;
 
-	List<ClubDto> postSelect(Integer club_article_id) throws Exception;
+	ClubDto postSelect(Integer club_article_id) throws Exception;
 
 	int updatePost(Map<String, Object> map) throws Exception;
 
