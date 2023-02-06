@@ -5,8 +5,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <!-- head & meta tag include -->
-    <%@include file="/WEB-INF/views/metahead.jsp"%>
+<!-- head & meta tag include -->
+<%@include file="/WEB-INF/views/metahead.jsp"%>
+<style>
+	a {color:black; text-decoration:none;}
+</style>
+<title>YOUNG문화센터 - 동아리 상세페이지</title>
 </head>
 <body>
   <!-- header -->
@@ -16,47 +20,47 @@
   <c:set var="myClubList" value="${myClubList }"></c:set>
 
   <!--start container-->
-  <div class="container">
-    <br>
-    
-    <h3>${clubSelect[0].club_title}</h3>
-    <hr /><br>
-    <div class="input-group" style="width: 200px; margin-left:80%; padding-bottom: 20px;">
+  <div class="container p-5">
+    <h2 class="my-3">${clubSelect[0].club_title}</h2>
+    <hr>
+<!--     <div class="input-group" style="width: 200px; margin-left:80%; padding-bottom: 20px;">
       <select class="form-select form-select-sm" aria-label=".form-select-sm example"
         style="width: 90px; margin-right: 10px;">
         <option value="1">최신순</option>
         <option value="2">조회순</option>
         <option value="3">관련순</option>
       </select>
-    </div>
+    </div> -->
     
     <!--글쓰기 버튼-->
 	<%-- <a id="writeBtn" class="btn btn-primary float-end" href="<c:url value='/club/board/write?club_id=${param.club_id }' />" role="button">글쓰기</a> --%>
 	<!-- <button type="button" id="writeBtn" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#exampleModal">가입하기</button> -->
-	<button type="button" id="writeBtn" class="btn btn-primary float-end">가입하기</button>
+	<button type="button" id="writeBtn" class="btn btn-primary float-end m-3">가입하기</button>
 	
     <!--게시판 부분-->
     <c:if test="${clubSelect[0].club_article_id != null }">
+    <div class="p-5">
     <table class="table table-hover">
       <thead>
-        <tr>
-          <th scope="col" style="text-align: center;">제목</th>
-          <th scope="col">글쓴이</th>
-          <th scope="col">날짜</th>
-          <th scope="col">조회수</th>
+        <tr class="row" style="text-align: center;">
+          <th class="col-7">제목</th>
+          <th class="col-2">글쓴이</th>
+          <th class="col-2">날짜</th>
+          <th class="col-1">조회수</th>
         </tr>
       </thead>
       <tbody>
       <c:forEach var="clubDto" items="${clubSelect }">
-        <tr>
-          <th scope="row"><a href="<c:url value='/club/board/view?club_id=${clubDto.club_id }&club_article_id=${clubDto.club_article_id }' />" class="text-decoration-none">${clubDto.club_article_title }</a></th>
-          <td>${clubDto.user_id }</td>
-          <td><fmt:formatDate pattern="yyyy-MM-dd" value="${clubDto.club_board_upload_time }" /></td>
-          <td>${clubDto.club_article_viewcnt }</td>
+        <tr class="row">
+          <th scope="row" class="col-7"><a href="<c:url value='/club/board/view?club_id=${clubDto.club_id }&club_article_id=${clubDto.club_article_id }' />" class="text-decoration-none'">${clubDto.club_article_title }</a></th>
+          <td class="col-2" style="text-align: center;">${clubDto.user_id }</td>
+          <td class="col-2" style="text-align: center;"><fmt:formatDate pattern="yyyy-MM-dd" value="${clubDto.club_board_upload_time }" /></td>
+          <td class="col-1" style="text-align: center;">${clubDto.club_article_viewcnt }</td>
         </tr>
 	  </c:forEach>
       </tbody>
     </table>
+    </div>
     </c:if>
     
  	<!-- Modal -->
