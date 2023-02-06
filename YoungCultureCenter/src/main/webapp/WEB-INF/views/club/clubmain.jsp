@@ -54,7 +54,7 @@
 	<div class="container text-center">
 		<div class="d-flex justify-content-between mt-5">
 			<h1 class="text-start" >인기 동아리</h1>
-			<button id="moveCreateFormBtn" class="btn btn-primary btn-sm h-25 mt-4" 
+			<button id="moveCreateFormBtn" class="btn btn-primary h-25 mt-4" 
 			onclick="location.href='<c:url value='/club/createForm'/>'">동아리 생성</button>
 		</div>
 
@@ -135,6 +135,21 @@
 		<h1 class="text-start mt-5">전체 동아리</h1>
 		<hr>
 		
+		<!-- 정렬 셀렉트 박스 -->
+		<div class="m-4 d-flex justify-content-end">
+			<form id="arrayForm" action="" method="get">
+				<input type="hidden" name="keyword" value="${param.keyword }" />
+				<label class="p-2" for="array-select">정렬</label>
+				<select name="array" id="array-select">
+					<option value="N">최신순</option>
+				    <option value="M">멤버수</option>
+				    <c:if test="${param.keyword != null}">
+				    	<option value="A" >정확도순</option>
+				    </c:if>
+				</select>
+			</form>
+		</div>
+		
 	    <!--게시판 부분-->
 	    <div>
 	    	<ul class="row" style="list-style:none;">
@@ -211,9 +226,17 @@
 <script>
   $(document).ready(function(){
 	  
-	  
 	let listThumb = $('.list_thumb')
-
+	
+	if(${param.array == null}) {
+		$('option[value=N]').attr("selected","selected")
+	} else {
+		$('option[value=${param.array}]').attr("selected","selected")
+	}
+	
+		
+	//$('#array-select').attr("selected")
+	
 		/* let msg = "${msg}"
 		if(msg == "OVERLAP") alert("중복된 동아리명입니다.") */
 			
@@ -232,9 +255,16 @@
 	  		$(this).addClass("active")
 	  	}) */
 	  	
+	  	$('#array-select').change(function(){
+	  		
+			let form = $('#arrayForm')
+	  		
+ 	  		form.attr("action", "<c:url value='/club?keyword=${param.keyword}'/>")
+			form.submit()
+	  	})
+	  		
 	  	
 	  	$('#dbCheckBtn').on("click", function() {
-	  		alert("dbCheckBtn")
 	  		var csrfHeaderName = "${_csrf.headerName}";
 			var csrfTokenValue = "${_csrf.token}";
 			let club_title = $('input[name=club_title]').val()
@@ -301,6 +331,8 @@
 				alert("동아리가 생성되었습니다!")
 			}
 		})
+		
+		
 		/* if(!formCheck()) */
 	  
 /* 	  <c:forEach items="${myClubList}" var="clubDto">

@@ -49,9 +49,13 @@ public class ClubController {
 
 	@GetMapping("/club")
 	public String clubMain(HttpServletRequest request, Model m, SearchItem sc, Authentication auth,
-			@RequestParam(required=false, value="keyword") String keyword) {
+			@RequestParam(required=false, value="keyword") String keyword,
+			@RequestParam(required=false, value="array") String array) {
 		
 		System.out.println("keyword" + keyword);
+		System.out.println("array" + array);
+		sc.setArray(array);
+		System.out.println(sc.getArray());
 		int totalCnt;
 		
 		try {

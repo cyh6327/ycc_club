@@ -98,7 +98,6 @@
 					href="<c:url value="/club/board${pr.sc.getQueryString(pr.endPage+1) }&club_id=${param.club_id }" />">&gt; </a></li>
 				</c:if>
 			</c:if>
-		</div>
 		</ul>
 	</nav>
 	
@@ -111,9 +110,10 @@
       <input type="text" class="form-control" aria-label="title" aria-describedby="basic-addon1" style="width: 300px;">
       <button type="button" class="btn btn-primary" style="margin-left: 10px;">검색</button>
     </div>
-  </div>
+
   
   <button type="button" id="quitBtn" class="btn btn-sm btn-outline-secondary float-end mx-5">탈퇴하기</button>
+   </div> 
   
 <script>
 /* 	let msg = "${msg}"

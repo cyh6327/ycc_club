@@ -21,10 +21,32 @@
 	<sql id="searchConditionClub">
 		AND club_title LIKE concat('%',#{keyword},'%')
 	</sql>
+	
+	<sql id="arrayCondition">
+		<choose>
+			<!-- 멤버수 -->
+			<when test='array=="M"'>
+				club_member_cnt desc, club_id desc
+			</when>
+			<!-- 정확도순 -->
+			<when test='array=="A"'>
+				case when club_title like #{keyword} then 0
+				when club_title like concat(#{keyword},'%') then 1
+				when club_title like concat('%', #{keyword}) then 2
+				when club_title like concat('%', #{keyword}, '%') then 3
+				else 4 end
+			</when>
+			<!-- 최신순 -->
+			<otherwise>
+				club_create_time desc, club_id desc
+			</otherwise>
+		</choose>
+	</sql>
 
 	<select id="clubListSelect" resultType="ClubDto" parameterType="SearchItem">
 		<include refid="selectAllClub" />
 		where true <include refid="searchConditionClub" />
+		order by <include refid="arrayCondition" />
 		limit #{pageSize} offset #{offset}
 	</select>
 	
