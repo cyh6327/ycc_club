@@ -287,6 +287,16 @@
 		return true;
 	}
 	
+	let titleCheck = function() {
+		let form = $('#form')
+		let club_title = $('#club_title').val()
+		if($.trim(club_title) == "") {
+			alert("동아리명을 입력해 주세요.")
+			return false
+		}
+		return true
+	}
+	
 	$('#createBtn').on("click", function() {
 		let form = $('#form')
 		
@@ -303,12 +313,21 @@
 	   $('input[name=dbCheck]').attr('value','dbUnchecked')
 	})
 	
+	// 중복확인 버튼
   	$('#dbCheckBtn').on("click", function() {
  		var csrfHeaderName = "${_csrf.headerName}";
 		var csrfTokenValue = "${_csrf.token}";
-	 		$.ajax({
-	 			beforeSend : function(xhr) {
-				xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
+ 		$.ajax({
+ 			beforeSend : function(xhr) {
+ 				xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
+  				if (!titleCheck()){
+ 					xhr.abort();
+ 				} /* else {
+  					xhr.open('post', '/ycc/club/dbCheckClubTitle');
+ 					xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
+ 					xhr.send(); 
+ 					console.log('OPENED', xhr.readyState);
+ 				} */
 			},
 			type : 'post',
 			url : '/ycc/club/dbCheckClubTitle',
@@ -331,7 +350,7 @@
 			error : function() {
 				alert("error")
 			}
- 		})
+		})
  	})
 	
 	</script>

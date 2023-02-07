@@ -117,7 +117,7 @@ public class ClubController {
 	}
 	
 	@PostMapping("/club/create")
-	public ResponseEntity<String> createClub(HttpServletRequest request, Authentication auth, ClubDto clubDto) {
+	public String createClub(HttpServletRequest request, Authentication auth, ClubDto clubDto) {
 		
 		logger.info("createClub....." + clubDto);
 		
@@ -148,12 +148,12 @@ public class ClubController {
 			if (clubCreate != 1) {
 				throw new Exception("Create Failed");
 			}
-			return new ResponseEntity<String>("", HttpStatus.OK);
+			return "redirect:/club";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		return new ResponseEntity<String>("", HttpStatus.OK);
+		return "redirect:/club";
 	}
 	
 	@PostMapping("/club/join")
@@ -271,8 +271,8 @@ public class ClubController {
 		Integer club_article_id = Integer.parseInt(str);
 		System.out.println("club_article_id" + club_article_id);
 		// html태그 제거 => 모든 태그가 제거되서 줄바꿈도 적용안되므로 다시 수정해야됌
-		club_article_content = club_article_content.replaceAll("<(/)?([a-zA-Z]*)(\\\\s[a-zA-Z]*=[^>]*)?(\\\\s)*(/)?>", "");
-		
+		//club_article_content = club_article_content.replaceAll("<(/)?([a-zA-Z]*)(\\\\s[a-zA-Z]*=[^>]*)?(\\\\s)*(/)?>", "");
+		club_article_content = club_article_content.replaceAll("\r\n","<br>");
 		// redirect시 /club/board/view의 파라미터를 전달
 		re.addAttribute("club_article_id", str);
 		re.addAttribute("club_id", str2);
@@ -381,9 +381,9 @@ public class ClubController {
 		String str = request.getParameter("club_id");
 		
 		Integer club_id = Integer.parseInt(str);
-		//club_article_content = club_article_content.replaceAll("\r\n", "<br>");
-		club_article_content = club_article_content.replaceAll("<(/)?([a-zA-Z]*)(\\\\s[a-zA-Z]*=[^>]*)?(\\\\s)*(/)?>", "");
-		System.out.println("club_article_content2 = " + club_article_content);
+		//club_article_content = club_article_content.replaceAll("<(/)?([a-zA-Z]*)(\\\\s[a-zA-Z]*=[^>]*)?(\\\\s)*(/)?>", "");
+		club_article_content = club_article_content.replaceAll("\r\n","<br>");
+		System.out.println("club_article_content = " + club_article_content);
 		Map<String, Object> map = new HashMap<String, Object>();
 	    map.put("club_article_title", club_article_title);
 	    map.put("club_article_content", club_article_content);

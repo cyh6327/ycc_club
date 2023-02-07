@@ -101,6 +101,10 @@
 					}
 				} else {
 					form.attr("action", "<c:url value ='/club/board/write'/>")
+					let textVal = $('#content').val()
+					console.log("textVal",textVal)
+					let textVal2 = textVal.replaceAll('</p>', '<br>')
+					console.log("textVal2",textVal2)
 					if(formCheck()) {
 						form.submit()
 						alert("게시글이 등록되었습니다.")

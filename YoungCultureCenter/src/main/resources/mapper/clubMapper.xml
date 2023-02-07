@@ -68,8 +68,6 @@
 		from club c
 		join club_member cm
 		on c.club_id = cm.club_id
-<!-- 		left join club_board cb 
-		on cm.club_id = cb.club_id  -->
 		where cm.user_id = #{user_id}
 	</select>
 	

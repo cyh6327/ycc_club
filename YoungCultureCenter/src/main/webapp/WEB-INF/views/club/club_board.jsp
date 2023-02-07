@@ -105,7 +105,7 @@
 		</ul>
 	</nav>
 	
-    <div class="bottomsearch" style="display: flex; margin-left: 30%; margin-top: 50px;">
+<!--     <div class="bottomsearch" style="display: flex; margin-left: 30%; margin-top: 50px;">
       <select class="form-select form-select-sm" aria-label=".form-select-sm example"
         style="width: 90px; margin-right: 10px;">
         <option value="1">제목</option>
@@ -113,7 +113,7 @@
       </select>
       <input type="text" class="form-control" aria-label="title" aria-describedby="basic-addon1" style="width: 300px;">
       <button type="button" class="btn btn-primary" style="margin-left: 10px;">검색</button>
-    </div>
+    </div> -->
 
   
   <button type="button" id="quitBtn" class="btn btn-sm btn-outline-secondary float-end mx-5">탈퇴하기</button>

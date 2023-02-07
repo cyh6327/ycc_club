@@ -92,18 +92,21 @@
 	  							</div>
   							</form>
 	    				</div>
+	    				<span>
+			  				<a id="listBtn" class="btn btn-outline-secondary float-end m-3" ><i class="bi bi-justify"></i>목록</a>
+			  				</span>	
 					</div>				
 					
-					<div class="row pb-5" style="float:right">
-						<div class="col-auto px-1" >
+<!-- 					<div class="row pb-5" style="float:right">
+						<div class="col-auto px-1" style="float:right">
 			  				<a id="listBtn" class="btn btn-outline-secondary" ><i class="bi bi-justify"></i>목록</a>	
 						</div>
-			       </div>
+			       </div> -->
 
 		  	
 			       <!-- 이전글, 다음글  -->
 			       <div class="prevNext">
-						<table class="table table-bordered table-hover" style="border-radius:5px;">
+<%-- 						<table class="table table-bordered table-hover" style="border-radius:5px;">
 							<colgroup>
 								<col width="120px;">
 								<col width="auto;">
@@ -134,7 +137,7 @@
 			    						</td>
 			    				</tr>
 			    			</tbody>
-			    		</table>
+			    		</table> --%>
 			    	</div>
 			    	</div>
 			</main>

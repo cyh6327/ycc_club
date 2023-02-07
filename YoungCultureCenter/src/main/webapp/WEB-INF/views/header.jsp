@@ -42,12 +42,12 @@
                             <li><a class="dropdown-item" href="/ycc/rental/locker">사물함신청</a></li>
                         </ul>
                     </li>
-                    <!-- <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" role="button"
+                    <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">커뮤니티</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="/ycc/club">동아리</a></li>
                         </ul>
-                    </li> -->
+                    </li>
                     <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">이용안내</a>
                         <ul class="dropdown-menu">
