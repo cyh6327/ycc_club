@@ -47,15 +47,21 @@
        
        <script>
        $(document).ready(function(){
+
+    	   function ConvertSystemSourcetoHtml(str){
+    		   str = str.replace(/</g,"&lt;");
+    		   str = str.replace(/>/g,"&gt;");
+    		   str = str.replaceAll("/","&#47;");
+    		   return str;
+    	   }
     	   
-    	   let content = '<c:out value="${postSelect.club_article_content}"/>';
-    	   console.log(content)
+    	   let content = "${postSelect.club_article_content}"
+    	   console.log("content", content)
     	   
     	   let url = window.location.href
-    	   console.log(url)
-    	   
-    	   /* $('.summernote').summernote('code', content); */
+
     	   $('.summernote').val(content)
+    	   
            $('.summernote').summernote({
            	   placeholder:"내용을 입력하세요.",
                height: 600,
