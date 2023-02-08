@@ -95,6 +95,8 @@
 		    	$("ul.nList").html(printNList(data))
 		        $("ul.eList").html(printEList(data))
 		        $("ul.courseList").html(printCourseList(data))
+		        $("ul.clubList").html(printClubList(data))
+		        
 		    },
 		    error : function(data) { 
 		    	alert("error")
@@ -258,6 +260,31 @@
 	 		return tmp += ''
  		}
 
+ 		let printClubList = function(data) {
+ 			let tmp = ''
+ 			for(idx in data.clubList) {
+ 				tmp += '<li>'
+ 		 		tmp += '<div class="p-3">'
+ 		 		tmp += '<h5 id="clubTitle" class="fw-bold">'
+ 		 		tmp += '<a href="<c:url value="/club/board?club_id='+data.clubList[idx].club_id+'" />">' + data.clubList[idx].club_title + '</a>'
+ 		 		tmp += '</h5>'
+ 		 		tmp += '<p>' + data.clubList[idx].club_info + '</p>'
+ 		 		tmp += '<div class="d-flex flex-row">'
+ 		 		tmp += '<span class="pe-4">'
+ 		 		tmp += '<span class="fw-bold">동아리장</span>'
+ 		 		tmp += '<span class="fw-light">' + data.clubList[idx].club_master_id + '</span>'
+ 		 		tmp += '</span>'
+ 		 		tmp += '<span class="pe-4">'
+ 		 		tmp += '<span class="fw-bold">개설일</span>'
+ 		 		tmp += '<span class="fw-light">' + <fmt:formatDate pattern="yyyy-MM-dd" value="${ClubDto.club_create_time }" /> + '</span>'
+ 		 		tmp += '</span>'
+ 		 		tmp += '</div>'
+ 		 		tmp += '</div>'
+ 		 		tmp += '</li>'
+ 			};
+	 		return tmp += ''
+ 		}
+ 		
 		const content = document.querySelectorAll('.cont');
 		const active = document.querySelectorAll('.tab_menu .list li a');
 		// 각 탭을 클릭하면
@@ -283,14 +310,14 @@
 			} else if($(this).hasClass("course") === true) {
 				$("#course").addClass("is_on")
 				$(".nav-link.course").addClass("active")
-			} /* else if($(this).hasClass("club") === true) {
+			} else if($(this).hasClass("club") === true) {
 				$("#club").addClass("is_on")
 				$(".nav-link.club").addClass("active")
-			} */ else {	// 전체 탭
+			} else {	// 전체 탭
 				$("#notice").addClass("is_on")
 				$("#event").addClass("is_on")
 				$("#course").addClass("is_on")
-				/* $("#club").addClass("is_on") */
+				$("#club").addClass("is_on")
 				$(".nav-link.all").addClass("active")
 			}
 		})
@@ -327,8 +354,8 @@
 				</li>
 				<li class="nav-item"><a class="nav-link event" href="#event">
 					이벤트(${eventList[0].count == null ? "0" : eventList[0].count }건)</a></li>
-<%-- 				<li class="nav-item"><a class="nav-link club" href="#club">
-					동아리(${clubList[0].count == null ? "0" : clubList[0].count }건)</a></li> --%>
+ 				<li class="nav-item"><a class="nav-link club" href="#club">
+					동아리(${clubList[0].count == null ? "0" : clubList[0].count }건)</a></li>
 				<li class="nav-item"><a class="nav-link course" href="#course">
 					강좌(${courseList[0].count == null ? "0" : courseList[0].count }건)</a></li>
 			</ul>
@@ -401,7 +428,7 @@
 			</div>
 			
 			<!-- 동아리 -->
-<%-- 			<div id="club" class="p-3 is_on cont">
+ 			<div id="club" class="p-3 is_on cont">
 				<h4 class="text-start fw-bold">동아리 (${clubList[0].count == null ? "0" : clubList[0].count }건)</h4>
 				<hr>
 				<c:set var="club" value="동아리" />
@@ -416,7 +443,7 @@
 							<c:if test="${clubList[0].count gt 5}">
 								<input style="float: right;" class="btn btn-write" type="submit" value="더보기" >
 							</c:if>	
-							<ul class="mx-3"style="padding-left: 0px;margin-bottom: 0px;">
+							<ul class="mx-3 clubList"style="padding-left: 0px;margin-bottom: 0px;">
 								<c:forEach var="ClubDto" items="${clubList }">
 									<li>
 										<div class="p-3">
@@ -439,7 +466,7 @@
 						</c:otherwise>
 					</c:choose>
 				</form>
-			</div> --%>
+			</div>
 
 			<!-- 강좌 -->
 			<div id="course" class="p-3 is_on cont">
