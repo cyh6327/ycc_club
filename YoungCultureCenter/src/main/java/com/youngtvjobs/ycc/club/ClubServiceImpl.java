@@ -23,8 +23,8 @@ public class ClubServiceImpl implements ClubService {
 	}
 
 	@Override
-	public List<ClubDto> getMyClub(String user_id) throws Exception {
-		return clubDao.myClubSelect(user_id);
+	public List<ClubDto> getMyClub(Map<String, Object> map) throws Exception {
+		return clubDao.myClubSelect(map);
 	}
 
 	@Override

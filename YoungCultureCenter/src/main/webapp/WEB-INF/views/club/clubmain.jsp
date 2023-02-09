@@ -91,16 +91,22 @@
 		</div>
 		
 		<!-- 내 동아리 -->
+		<div>
 		<h1 class="text-start mt-5">내 동아리</h1>
 		<hr>
 		<c:set var="user_id" value="${user_id}"></c:set>
 		<c:set var="myClubList" value="${myClubList}"></c:set>
+		<c:if test="${myClubList[0].count ge 4}">
+			<span class="d-flex justify-content-end">
+				<a class="mx-4" href="<c:url value='/club/myClubList'/>" style="text-decoration: none; text-decoration-color: black;">더보기</a>
+			</span>
+		</c:if>
 		<c:choose>
 			<c:when test="${myClubList[0] == null}">
 				<p>가입한 동아리가 없습니다.</p>
 			</c:when>
 			<c:otherwise>
-				<c:forEach var="clubDto" items="${myClubList }">
+				<c:forEach var="clubDto" items="${myClubList }" begin="1" end="3">
 					<div class="text-start px-4">
 						<div class="d-flex me-auto">
 							<div id="result_card" class="mx-3 mb-3" style="height: 150px; width: 150px;">
@@ -130,6 +136,7 @@
 				</c:forEach>
 			</c:otherwise>
 		</c:choose>
+		</div>
 			
 		<!-- 전체 동아리 -->
 		<h1 class="text-start mt-5">전체 동아리</h1>

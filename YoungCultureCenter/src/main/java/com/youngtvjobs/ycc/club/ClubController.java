@@ -55,6 +55,13 @@ public class ClubController {
 		sc.setArray(array);
 		int totalCnt;
 		
+		String user_id = auth.getName(); 
+		m.addAttribute("user_id", user_id);
+	    System.out.println("user_id = " + user_id);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+	    map.put("user_id", user_id);
+		
 		try {
 			
 			List<ClubDto> cList = clubService.getClubList(sc);
@@ -64,12 +71,8 @@ public class ClubController {
 			List<ClubDto> pClubList = clubService.getPopularClub();
 			m.addAttribute("pClubList", pClubList);
 			System.out.println("pClubList = " + pClubList);
-			
-			String user_id = auth.getName(); 
-			m.addAttribute("user_id", user_id);
-		    System.out.println("user_id = " + user_id);
 		    
-		    List<ClubDto> myClubList = clubService.getMyClub(user_id);
+		    List<ClubDto> myClubList = clubService.getMyClub(map);
 		    m.addAttribute("myClubList", myClubList);
 		    System.out.println("myClubList = " + myClubList);
 		    
@@ -93,12 +96,35 @@ public class ClubController {
 		return "club/clubCreateForm";
 	}
 	
-	/*
-	@GetMapping("/club/joinForm")
-	public String clubJoinForm() {
-		return "club/clubJoinForm";
+
+	@GetMapping("/club/myClubList")
+	public String myClubList(Authentication auth, Model m, SearchItem sc) {
+		
+		String user_id = auth.getName(); 
+		m.addAttribute("user_id", user_id);
+		
+		int totalCnt;
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+	    map.put("user_id", user_id);
+	    map.put("pageSize", sc.getPageSize());
+	    map.put("offset", sc.getOffset());
+		
+		try {
+		    List<ClubDto> myClubList = clubService.getMyClub(map);
+		    m.addAttribute("myClubList", myClubList);
+		    
+		    totalCnt = clubService.getMyClub(map).get(0).getCount();
+		    PageResolver pageResolver = new PageResolver(totalCnt, sc);
+		    m.addAttribute("totalCnt", totalCnt);
+			m.addAttribute("pr", pageResolver);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return "club/myClubList";
 	}
-	*/
 	
 	@PostMapping("/club/dbCheckClubTitle")
 	@ResponseBody
@@ -196,7 +222,7 @@ public class ClubController {
 			m.addAttribute("clubSelect", clubSelect);
 			System.out.println("clubSelect = " + clubSelect);
 			
-			List<ClubDto> myClubList = clubService.getMyClub(user_id);
+			List<ClubDto> myClubList = clubService.getMyClub(map);
 		    m.addAttribute("myClubList", myClubList);
 		    
 		    int totalCnt = clubService.clubSelect(map).get(0).getCount();
@@ -214,13 +240,16 @@ public class ClubController {
 	}
 
 	@RequestMapping("club/board/view")
-	public String viewClubPost(HttpServletRequest request, Model m, Authentication auth,
+	public String viewClubPost(HttpServletRequest request, Model m, Authentication auth, SearchItem sc,
 			@RequestParam("club_article_id") String str) {
 		
 		Integer club_article_id = Integer.parseInt(str);
 		System.out.println("club_article_id = " + club_article_id);
 		String user_id = auth.getName(); 
 		m.addAttribute("user_id", user_id);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+	    map.put("user_id", user_id);
 		
 		try {
 			ClubDto postSelect = clubService.postSelect(club_article_id);
@@ -231,7 +260,7 @@ public class ClubController {
 			m.addAttribute("commentSelect", commentSelect);
 			System.out.println("commentSelect=" + commentSelect);
 		 
-			List<ClubDto> myClubList = clubService.getMyClub(user_id);
+			List<ClubDto> myClubList = clubService.getMyClub(map);
 			m.addAttribute("myClubList", myClubList);
 			
 		} catch (Exception e) {

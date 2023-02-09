@@ -20,8 +20,8 @@ public class ClubDaoImpl implements ClubDao{
 	}
 
 	@Override
-	public List<ClubDto> myClubSelect(String user_id) throws Exception {
-		return session.selectList(namespace+"myClubSelect",user_id);
+	public List<ClubDto> myClubSelect(Map<String, Object> map) throws Exception {
+		return session.selectList(namespace+"myClubSelect",map);
 	}
 
 	@Override

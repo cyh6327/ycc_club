@@ -7,7 +7,7 @@ public interface ClubService {
 
 	List<ClubDto> getClubList(SearchItem sc) throws Exception;
 
-	List<ClubDto> getMyClub(String user_id) throws Exception;
+	List<ClubDto> getMyClub(Map<String, Object> map) throws Exception;
 
 	int createClub(Map map) throws Exception;
 
